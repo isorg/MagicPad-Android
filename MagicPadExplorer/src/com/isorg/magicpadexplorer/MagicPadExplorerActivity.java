@@ -57,14 +57,14 @@ public class MagicPadExplorerActivity extends Activity {
         mGrid.setAdapter(mAdapter);
         
         mAdapter.getItem(0).setName("Test Connexion");
-        mAdapter.getItem(2).setName("On Off application");
+        mAdapter.getItem(1).setName("On Off application");
 
         
         // The listener for items
         mGrid.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
 
-			    if (mAdapter.getItem(position).getName() == mAdapter.getItem(0).getName()) {
+			    if (mAdapter.getItem(position).getName() == "Test Connexion") {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, Application1.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);

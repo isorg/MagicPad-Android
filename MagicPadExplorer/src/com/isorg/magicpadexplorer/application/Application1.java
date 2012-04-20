@@ -35,7 +35,7 @@ public class Application1 extends Activity {
 	
 	// For the BT
 	private MagicPadDevice magicPadDevice;
-	private final String address = getIntent().getExtras().getString("address");
+	private String address;
 	
 	// process pipeline
 	private ImageReaderAlgorithm imageReader = null;
@@ -93,6 +93,7 @@ public class Application1 extends Activity {
 		mTimer = new Timer();
 		
 		// BT connexion 
+		address = getIntent().getExtras().getString("address");
 		if (D) Log.d(TAG, "Address : " + address);
 		
         imageReader = new ImageReaderAlgorithm();
