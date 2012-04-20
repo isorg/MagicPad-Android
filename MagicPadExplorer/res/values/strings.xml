@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, MagicPadExplorerActivity!</string>
+    <string name="app_name">MagicPadExplorer</string>
+    <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving application.</string>
+    <string name="bt_no_device_found">0 devices found. Please pair with a MagicPad and relaunch the application.</string>
+   
+    <!--  DeviceListActivity -->
+    <string name="scanning">scanning for devices...</string>
+    <string name="select_device">select a device to connect</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="none_found">No devices found</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for devices</string>
+    
+    <!--  Menu  -->
+    <string name="exit">Exit</string>
+    <string name="site">About ISORG</string>
+    
+</resources>
