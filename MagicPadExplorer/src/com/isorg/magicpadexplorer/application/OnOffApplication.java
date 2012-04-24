@@ -26,7 +26,6 @@ public class OnOffApplication extends Activity {
 	// For the GUI
 	private ImageView draw = null;
 	private boolean state, previousObjectDetected = false;
-	private CountDownTimer counter;
 	
 	// Refresh the data
 	private Timer mTimer;
@@ -77,15 +76,6 @@ public class OnOffApplication extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.on_off_layout);
-		
-		counter = new CountDownTimer (3000, 3000) {
-
-			@Override
-			public void onFinish() {}
-
-			@Override
-			public void onTick(long arg0) {}
-		};
 		
 		draw = (ImageView) findViewById(R.id.draw);
 

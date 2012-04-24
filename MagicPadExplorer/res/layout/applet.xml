@@ -8,13 +8,15 @@
     <ImageView android:id="@+id/applet_Image"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@drawable/ic_launcher"
+        android:src="@drawable/ic_launcher"
         />
     
     <TextView android:id="@+id/applet_name"
+        android:text="Ceci est un test oui"
+        android:textSize="15sp"
         android:gravity="center"
-        android:layout_width="100dp"
-        android:layout_height="35dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         />
     
 

@@ -1,14 +1,8 @@
 package com.isorg.magicpadexplorer;
 
-import com.isorg.magicpadexplorer.application.Applet;
-import com.isorg.magicpadexplorer.application.AppletAdapter;
-import com.isorg.magicpadexplorer.application.Application1;
-import com.isorg.magicpadexplorer.application.OnOffApplication;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +14,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import com.isorg.magicpadexplorer.application.Applet;
+import com.isorg.magicpadexplorer.application.AppletAdapter;
+import com.isorg.magicpadexplorer.application.Application1;
+import com.isorg.magicpadexplorer.application.OnOffApplication;
+import com.isorg.magicpadexplorer.application.VumeterApplication;
 
 public class MagicPadExplorerActivity extends Activity {
     /** Called when the activity is first created. */
@@ -55,16 +55,21 @@ public class MagicPadExplorerActivity extends Activity {
         	mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.ic_launcher),"L'application " + (i + 1)));
         mGrid = (GridView) findViewById(R.id.home_page);
         mGrid.setAdapter(mAdapter);
-        
-        mAdapter.getItem(0).setName("Test Connexion");
+
+        mAdapter.getItem(0).setName("Connexion Test");
+        mAdapter.getItem(0).setIcon(getResources().getDrawable(R.drawable.btlogo2));
         mAdapter.getItem(1).setName("On Off application");
+        mAdapter.getItem(1).setIcon(getResources().getDrawable(R.drawable.onbutton));
+        mAdapter.getItem(2).setName("Vumeter application");
+        mAdapter.getItem(2).setIcon(getResources().getDrawable(R.drawable.vumeterapplication));
+
 
         
         // The listener for items
         mGrid.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
 
-			    if (mAdapter.getItem(position).getName() == "Test Connexion") {
+			    if (mAdapter.getItem(position).getName() == "Connexion Test") {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, Application1.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
@@ -75,7 +80,12 @@ public class MagicPadExplorerActivity extends Activity {
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
-			    }
+			    }else if (mAdapter.getItem(position).getName() == "Vumeter application") {
+					Intent intent = new Intent(MagicPadExplorerActivity.this, VumeterApplication.class);
+					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
+					intent.putExtra("address", magicPadAddress);
+					startActivity(intent);
+			    }			    
 			    else {
 	        	    Applet a = (Applet)mAdapter.getItem(position);
 					a.setName("Ca a été appuyé !");
