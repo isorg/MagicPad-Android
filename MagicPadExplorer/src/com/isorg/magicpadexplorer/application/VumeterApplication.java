@@ -1,49 +1,31 @@
 package com.isorg.magicpadexplorer.application;
 
-import java.util.Timer;
 import java.util.TimerTask;
-
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.Window;
-import android.widget.Toast;
 
 import com.isorg.magicpadexplorer.MagicPadDevice;
 import com.isorg.magicpadexplorer.R;
 import com.isorg.magicpadexplorer.algorithm.CalibrationAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.ImageReaderAlgorithm;
 
-public class VumeterApplication extends Activity {
+public class VumeterApplication extends ApplicationActivity {
 	
 	//For debugging
 	boolean D = true;
 	String TAG = "VumeterApplication";
 	
-	// Refresh the data
-	private Timer mTimer;
-	private static final int FRAME_PERIOD = 75;
-	
-	// For the BT
-	private MagicPadDevice magicPadDevice;
-	private String address;
-	
-	// process pipeline
-	private ImageReaderAlgorithm imageReader = null;
-	private CalibrationAlgorithm calibration = null;
-	
 	private Vue mVue;
-	
+
 	
 	// Message handler
     final Handler handlerStatus = new Handler() {
@@ -61,7 +43,6 @@ public class VumeterApplication extends Activity {
             	
             	if (D) Log.d(TAG, "moyenne = " + String.valueOf(average));
 
-
             	if (average >= 249) mVue.setState(0);
             	else if ( (average >= (255-42)) &&  (average < 249)) mVue.setState(1);
             	else if ( (average >= (255-42*2)) &&  (average < (255-42))) mVue.setState(2);
@@ -70,10 +51,6 @@ public class VumeterApplication extends Activity {
             	else if ( (average >= (255-42*5)) &&  (average < (255-42*4))) mVue.setState(5);
             	else if ( (average >= (255-42*6)) &&  (average < (255-42*5))) mVue.setState(6);
 
-
-
-
-            	
         	}
         }
     };  
@@ -81,13 +58,11 @@ public class VumeterApplication extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         
         mVue = new Vue (this);
         setContentView(mVue);
         
 		magicPadDevice = new MagicPadDevice(handlerStatus);
-		mTimer = new Timer();
 		
 		// BT connexion 
 		address = getIntent().getExtras().getString("address");
@@ -104,36 +79,19 @@ public class VumeterApplication extends Activity {
     @Override
 	protected void onResume() {
 		magicPadDevice.connect((address));
-		readFrames();
-		Toast.makeText(this, "Please, wait for the Bluetooth connexion", 80000).show();
 		super.onResume();
 	}
     
    
 	@Override
 	protected void onPause() {
-		mTimer.cancel();
 		magicPadDevice.close();
 		super.onPause();
 	}
 
-    
-    // ------  METHODS TO READ THE MAGIC PAD FRAME  ------ //
-    
-	// Start reading frames at regular intervals
-	private void readFrames()
-    {
-    	mTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				TimerMethod();
-			}
-		}, 0, FRAME_PERIOD);
-    }
-
-
+ 
 	// Read a frame and update the processing pipeline
-    private void TimerMethod() {    	
+    protected void TimerMethod() {    	
     	// send read frame command
     	magicPadDevice.sendCommand(MagicPadDevice.COMMAND_FRAME);
     	

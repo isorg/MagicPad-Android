@@ -5,12 +5,15 @@ import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -21,24 +24,11 @@ import com.isorg.magicpadexplorer.algorithm.CalibrationAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.ImageReaderAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.OtsuAlgorithm;
 
-public class OnOffApplication extends Activity {
+public class OnOffApplication extends ApplicationActivity {
 	
 	// For the GUI
 	private ImageView draw = null;
 	private boolean state, previousObjectDetected = false;
-	
-	// Refresh the data
-	private Timer mTimer;
-	private static final int FRAME_PERIOD = 75;
-	
-	// For the BT
-	private MagicPadDevice magicPadDevice;
-	private String address;
-	
-	// process pipeline
-	private ImageReaderAlgorithm imageReader = null;
-	private CalibrationAlgorithm calibration = null;
-	private OtsuAlgorithm otsu = null;
 	
 	//For debug
 	private String TAG = "OnOffApplication";
@@ -80,13 +70,10 @@ public class OnOffApplication extends Activity {
 		draw = (ImageView) findViewById(R.id.draw);
 
 		magicPadDevice = new MagicPadDevice(handlerStatus);
-		mTimer = new Timer();
 		
 		// BT connexion 
 		address = getIntent().getExtras().getString("address");
 		if (D) Log.d(TAG, "Address : " + address);
-		//magicPadDevice.connect((address));
-		//readFrames();
 		
         imageReader = new ImageReaderAlgorithm();
         imageReader.setInput(magicPadDevice);
@@ -103,59 +90,23 @@ public class OnOffApplication extends Activity {
     @Override
 	protected void onResume() {
 		magicPadDevice.connect((address));
-		readFrames();
-		Toast.makeText(this, "Please, wait for the Bluetooth connexion", 60000).show();
 		super.onResume();
 	}
     
    
 	@Override
 	protected void onPause() {
-		mTimer.cancel();
 		magicPadDevice.close();
 		super.onPause();
 	}
 
     
-    /********				Save/restore the State				*******/
-    /*
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-    	// Save UI state changes to the savedInstanceState.
-    	// This bundle will be passed to onCreate if the process is
-    	// killed and restarted.
-    	savedInstanceState.putBoolean("BTParameters", true);
-    	super.onSaveInstanceState(savedInstanceState);
-    }
-    
-    
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-    	BTParameters = savedInstanceState.getBoolean("BTParameters");
-    	super.onRestoreInstanceState(savedInstanceState);
-    	// Restore UI state from the savedInstanceState.
-    	// This bundle has also been passed to onCreate.
-    }
-     */
-	
-	
-    // ------  METHODS TO READ THE MAGIC PAD FRAME  ------ //
-    
-	// Start reading frames at regular intervals
-	private void readFrames()
-    {
-    	mTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				TimerMethod();
-			}
-		}, 0, FRAME_PERIOD);
-    }
 
 
 	// Read a frame and update the processing pipeline
-    private void TimerMethod() {    	
+	@Override
+    protected void TimerMethod() {    	
     	// send read frame command
     	magicPadDevice.sendCommand(MagicPadDevice.COMMAND_FRAME);
     	
@@ -180,31 +131,4 @@ public class OnOffApplication extends Activity {
 		else if (!otsu.isObjectDetected() && previousObjectDetected)
 			previousObjectDetected = false;
     }
-    
-    
-    
-    /********    For the indeterminate progress bar    ********/
-    /*
-    private class waitForConnexion extends AsyncTask<Void, Void, Integer>      {
-    	private ProgressDialog pb = new ProgressDialog(OnOffApplication.this);
-    	
-    	@Override
-    	protected void onPreExecute() {
-    		//pb.setIndeterminate(true);
-    		pb.show();
-    	}
-
-    	@Override
-    	protected void onPostExecute(Integer result) {
-    		pb.dismiss();
-    	}
-
-		@Override
-		protected Integer doInBackground(Void... arg0) {
-
-    		return 0;
-    	}
-  }*/
-
-
 }

@@ -2,9 +2,12 @@ package com.isorg.magicpadexplorer;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +22,7 @@ import com.isorg.magicpadexplorer.application.Applet;
 import com.isorg.magicpadexplorer.application.AppletAdapter;
 import com.isorg.magicpadexplorer.application.Application1;
 import com.isorg.magicpadexplorer.application.OnOffApplication;
+import com.isorg.magicpadexplorer.application.PotentiometerApplication;
 import com.isorg.magicpadexplorer.application.VumeterApplication;
 
 public class MagicPadExplorerActivity extends Activity {
@@ -34,7 +38,9 @@ public class MagicPadExplorerActivity extends Activity {
 	private String magicPadAddress = null;
 	private boolean BTParameters = false;
 		
-	
+	//For keep the screen bright
+    WakeLock mWakeLock;
+
 
 	// For the debugging
 	private String TAG = "magicExplorerActivity";
@@ -62,8 +68,16 @@ public class MagicPadExplorerActivity extends Activity {
         mAdapter.getItem(1).setIcon(getResources().getDrawable(R.drawable.onbutton));
         mAdapter.getItem(2).setName("Vumeter application");
         mAdapter.getItem(2).setIcon(getResources().getDrawable(R.drawable.vumeterapplication));
+        mAdapter.getItem(3).setName("Potentiometer application");
+        mAdapter.getItem(3).setIcon(getResources().getDrawable(R.drawable.logoforpotentiometer));
 
-
+        try
+		{
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, TAG);
+		}
+		catch (Exception e){
+		}
         
         // The listener for items
         mGrid.setOnItemClickListener(new OnItemClickListener() {
@@ -85,6 +99,11 @@ public class MagicPadExplorerActivity extends Activity {
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
+			    }else if (mAdapter.getItem(position).getName() == "Potentiometer application") {
+					Intent intent = new Intent(MagicPadExplorerActivity.this, PotentiometerApplication.class);
+					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
+					intent.putExtra("address", magicPadAddress);
+					startActivity(intent);
 			    }			    
 			    else {
 	        	    Applet a = (Applet)mAdapter.getItem(position);
@@ -93,11 +112,15 @@ public class MagicPadExplorerActivity extends Activity {
 			    }
         	}
         });
+        
+		
     }
     
     
     @Override
 	protected void onResume() {
+        mWakeLock.acquire();
+
         if (!BTParameters) {
 	        final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter(); 
 	        if (bluetoothAdapter == null)
@@ -113,6 +136,11 @@ public class MagicPadExplorerActivity extends Activity {
         }
     	super.onResume();
 	}
+    
+    protected void onPause() {
+    	mWakeLock.release();
+    	super.onPause();
+    }
     
    
 

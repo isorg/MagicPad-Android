@@ -4,10 +4,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,32 +22,17 @@ import com.isorg.magicpadexplorer.algorithm.FingerTipAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.ImageReaderAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.OtsuAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.QuartAlgorithm;
+import com.isorg.magicpadexplorer.algorithm.RotationAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.SwapAlgorithm;
 
 
 
 
-public class Application1 extends Activity {
+public class Application1 extends ApplicationActivity {
 	
 	// For the GUI
-	private TextView tvImagerReader, tvCalibration, tvOtsu, tvFingerTip, tvQuartAlgo, tvSwapAlgo = null;
-	
-	// Refresh the data
-	private Timer mTimer;
-	private static final int FRAME_PERIOD = 75;
-	
-	// For the BT
-	private MagicPadDevice magicPadDevice;
-	private String address;
-	
-	// process pipeline
-	private ImageReaderAlgorithm imageReader = null;
-	private CalibrationAlgorithm calibration = null;
-	private OtsuAlgorithm otsu = null;
-	private FingerTipAlgorithm fingerTip = null;
-	private QuartAlgorithm quartAlgo = null;
-	private SwapAlgorithm swapAlgo = null;
-	
+	private TextView tvImagerReader, tvCalibration, tvOtsu, tvFingerTip, tvQuartAlgo, tvSwapAlgo, tvRotationAlgo = null;
+
 	//For debug
 	private String TAG = "Application1";
 	private Boolean D = true;
@@ -65,11 +53,12 @@ public class Application1 extends Activity {
             } else if(co == 3) {
             	if(D) Log.d(TAG, "imageReader[0] = " + imageReader.getOutput().data[0]);
             	tvImagerReader.setText("imageReader [0] = " + String.valueOf(imageReader.getOutput().data[0]));
-            	tvCalibration.setText("calibration [0] = " + String.valueOf(calibration.getOutput().data[0]));
+            	tvCalibration.setText("calibration [0] = " + String.valueOf(calibration.getOutput().data[0]  & 0xff));
             	tvOtsu.setText("Object detected = " + String.valueOf(otsu.isObjectDetected()));
             	tvFingerTip.setText("finger tip x = " + String.valueOf( fingerTip.getPosX()) + "finger tip Y = " + String.valueOf(fingerTip.getPosY()));
             	tvQuartAlgo.setText("quart = " + String.valueOf(quartAlgo.getQuart() ));
             	tvSwapAlgo.setText( "swap = " + String.valueOf(swapAlgo.getSwapMotion()));
+            	tvRotationAlgo.setText("rotate = " + String.valueOf(rotationAlgo.getAngle() ));
             }
         }
     };    
@@ -88,9 +77,9 @@ public class Application1 extends Activity {
 		tvFingerTip = (TextView) findViewById(R.tv.fingertip);
 		tvQuartAlgo = (TextView) findViewById(R.tv.quartalgo);
 		tvSwapAlgo = (TextView) findViewById(R.tv.swapalgo);
+		tvRotationAlgo = (TextView) findViewById(R.tv.rotationalgo);
 
 		magicPadDevice = new MagicPadDevice(handlerStatus);
-		mTimer = new Timer();
 		
 		// BT connexion 
 		address = getIntent().getExtras().getString("address");
@@ -115,65 +104,31 @@ public class Application1 extends Activity {
         swapAlgo = new SwapAlgorithm();
         swapAlgo.setInput(otsu);
         
+        rotationAlgo = new RotationAlgorithm();
+        rotationAlgo.setInput(calibration);
+        
 	}
 	
 	
     @Override
 	protected void onResume() {
 		magicPadDevice.connect(address);
-		readFrames();
-		Toast.makeText(this, "Please, wait for the Bluetooth connexion", 6000).show();
         super.onResume();
 	}
     
    
 	@Override
 	protected void onPause() {
-		mTimer.cancel();
 		magicPadDevice.close();
 		super.onPause();
 	}
 
-    
-    /********				Save/restore the State				*******/
-    /*
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-    	// Save UI state changes to the savedInstanceState.
-    	// This bundle will be passed to onCreate if the process is
-    	// killed and restarted.
-    	savedInstanceState.putBoolean("BTParameters", true);
-    	super.onSaveInstanceState(savedInstanceState);
-    }
-    
-    
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-    	BTParameters = savedInstanceState.getBoolean("BTParameters");
-    	super.onRestoreInstanceState(savedInstanceState);
-    	// Restore UI state from the savedInstanceState.
-    	// This bundle has also been passed to onCreate.
-    }
-     */
 	
-	
-    /**********    METHODS TO READ THE MAGIC PAD FRAME     **********/
-    
-	// Start reading frames at regular intervals
-	private void readFrames()
-    {
-    	mTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				TimerMethod();
-			}
-		}, 0, FRAME_PERIOD);
-    }
 
 
 	// Read a frame and update the processing pipeline
-    private void TimerMethod() {    	
+	@Override
+    protected void TimerMethod() {    	
     	// send read frame command
     	magicPadDevice.sendCommand(MagicPadDevice.COMMAND_FRAME);
     	
@@ -184,6 +139,7 @@ public class Application1 extends Activity {
     	fingerTip.update();
     	quartAlgo.update();
     	swapAlgo.update();
+    	rotationAlgo.update();
     	
     	if( imageReader.getOutput() == null )
     		{
