@@ -31,7 +31,7 @@ import com.isorg.magicpadexplorer.algorithm.SwapAlgorithm;
 public class Application1 extends ApplicationActivity {
 	
 	// For the GUI
-	private TextView tvImagerReader, tvCalibration, tvOtsu, tvFingerTip, tvQuartAlgo, tvSwapAlgo, tvRotationAlgo = null;
+	private TextView tvImagerReader, tvCalibration, tvOtsu, tvFingerTip, tvQuartAlgo, tvSwapAlgo, tvRotationAlgo, tvConnexion = null;
 
 	//For debug
 	private String TAG = "Application1";
@@ -44,13 +44,13 @@ public class Application1 extends ApplicationActivity {
     final Handler handlerStatus = new Handler() {
         @Override
 		public void handleMessage(Message msg) {        	
-            int co = msg.arg1;
-            if(co == 1) {
-            	if (D) Log.d(TAG, "Connected\n");
-            	readFrames();
-            } else if(co == 2) {
-            	if (D) Log.d(TAG, "Disconnected\n");
-            } else if(co == 3) {
+            if(msg.arg1 == 1) {
+            	if (D) Log.d(TAG, "Connected");
+            	tvConnexion.setText("Connected");
+            } else if(msg.arg1 == 2) {
+            	if (D) Log.d(TAG, "Disconnected");
+    			Toast.makeText(Application1.this, "Problem with Bluetooth connexion", 80000).show();
+            } else if(msg.arg1 == 3) {
             	if(D) Log.d(TAG, "imageReader[0] = " + imageReader.getOutput().data[0]);
             	tvImagerReader.setText("imageReader [0] = " + String.valueOf(imageReader.getOutput().data[0]));
             	tvCalibration.setText("calibration [0] = " + String.valueOf(calibration.getOutput().data[0]  & 0xff));
@@ -71,6 +71,7 @@ public class Application1 extends ApplicationActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.app1);
 		
+		tvConnexion = (TextView) findViewById(R.tv.connexion);
 		tvImagerReader = (TextView) findViewById(R.tv.imagereader);
 		tvCalibration = (TextView) findViewById(R.tv.calibration);
 		tvOtsu = (TextView) findViewById(R.tv.otsu);

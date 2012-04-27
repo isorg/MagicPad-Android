@@ -8,7 +8,7 @@
 	<uses-permission android:name="android.permission.BLUETOOTH" />
 	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
-	
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	
 
     <application
@@ -43,6 +43,10 @@
         </activity>
         
         <activity android:name=".application.PotentiometerApplication"
+            android:label="@string/app_name">
+        </activity>
+        
+        <activity android:name=".application.PhotosBrowserApplication"
             android:label="@string/app_name">
         </activity>
 

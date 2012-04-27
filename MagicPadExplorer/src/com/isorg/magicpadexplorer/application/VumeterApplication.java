@@ -12,6 +12,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.isorg.magicpadexplorer.MagicPadDevice;
 import com.isorg.magicpadexplorer.R;
@@ -31,7 +32,12 @@ public class VumeterApplication extends ApplicationActivity {
     final Handler handlerStatus = new Handler() {
         @Override
 		public void handleMessage(Message msg) {
-        	if(msg.arg1 == 3) {            	
+            if(msg.arg1 == 1) {
+            	if (D) Log.d(TAG, "Connected");
+            } else if(msg.arg1 == 2) {
+            	if (D) Log.d(TAG, "Disconnected");
+    			Toast.makeText(VumeterApplication.this, "Problem with Bluetooth connexion", 80000).show();
+            } else if(msg.arg1 == 3) {            	
         
             	if(D) Log.d(TAG, "imageReader[0] = " + imageReader.getOutput().data[0]);
             	

@@ -41,7 +41,12 @@ public class OnOffApplication extends ApplicationActivity {
     final Handler handlerStatus = new Handler() {
         @Override
 		public void handleMessage(Message msg) {
-        	if(msg.arg1 == 3) {            	
+            if(msg.arg1 == 1) {
+            	if (D) Log.d(TAG, "Connected");
+            } else if(msg.arg1 == 2) {
+            	if (D) Log.d(TAG, "Disconnected");
+    			Toast.makeText(OnOffApplication.this, "Problem with Bluetooth connexion", 80000).show();
+            } else if(msg.arg1 == 3) {           	
         
             	if(D) Log.d(TAG, "imageReader[0] = " + imageReader.getOutput().data[0]);
             	

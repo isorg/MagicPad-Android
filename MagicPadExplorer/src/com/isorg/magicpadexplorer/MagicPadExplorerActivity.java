@@ -22,6 +22,7 @@ import com.isorg.magicpadexplorer.application.Applet;
 import com.isorg.magicpadexplorer.application.AppletAdapter;
 import com.isorg.magicpadexplorer.application.Application1;
 import com.isorg.magicpadexplorer.application.OnOffApplication;
+import com.isorg.magicpadexplorer.application.PhotosBrowserApplication;
 import com.isorg.magicpadexplorer.application.PotentiometerApplication;
 import com.isorg.magicpadexplorer.application.VumeterApplication;
 
@@ -64,12 +65,15 @@ public class MagicPadExplorerActivity extends Activity {
 
         mAdapter.getItem(0).setName("Connexion Test");
         mAdapter.getItem(0).setIcon(getResources().getDrawable(R.drawable.btlogo2));
-        mAdapter.getItem(1).setName("On Off application");
+        mAdapter.getItem(1).setName("Smart Switch");
         mAdapter.getItem(1).setIcon(getResources().getDrawable(R.drawable.onbutton));
-        mAdapter.getItem(2).setName("Vumeter application");
+        mAdapter.getItem(2).setName("Vumeter");
         mAdapter.getItem(2).setIcon(getResources().getDrawable(R.drawable.vumeterapplication));
-        mAdapter.getItem(3).setName("Potentiometer application");
+        mAdapter.getItem(3).setName("Twist");
         mAdapter.getItem(3).setIcon(getResources().getDrawable(R.drawable.logoforpotentiometer));
+        mAdapter.getItem(4).setName("Photos Browser");
+        mAdapter.getItem(4).setIcon(getResources().getDrawable(R.drawable.logoforphotosbrowser));
+
 
         try
 		{
@@ -89,22 +93,27 @@ public class MagicPadExplorerActivity extends Activity {
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
 			    }
-			    else if (mAdapter.getItem(position).getName() == "On Off application") {
+			    else if (mAdapter.getItem(position).getName() == "Smart Switch") {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, OnOffApplication.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
-			    }else if (mAdapter.getItem(position).getName() == "Vumeter application") {
+			    }else if (mAdapter.getItem(position).getName() == "Vumeter") {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, VumeterApplication.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
-			    }else if (mAdapter.getItem(position).getName() == "Potentiometer application") {
+			    }else if (mAdapter.getItem(position).getName() == "Twist") {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, PotentiometerApplication.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
-			    }			    
+			    }else if (mAdapter.getItem(position).getName() == "Photos Browser") {
+					Intent intent = new Intent(MagicPadExplorerActivity.this, PhotosBrowserApplication.class);
+					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
+					intent.putExtra("address", magicPadAddress);
+					startActivity(intent);
+			    }	    
 			    else {
 	        	    Applet a = (Applet)mAdapter.getItem(position);
 					a.setName("Ca a été appuyé !");

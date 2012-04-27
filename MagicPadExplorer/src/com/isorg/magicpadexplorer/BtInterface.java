@@ -150,7 +150,9 @@ public class BtInterface {
 				} catch (IOException e) {
 					if(D) Log.v(TAG, "Connection Failed : " + e.getMessage());
 					e.printStackTrace();
-
+					Message msg = handler.obtainMessage();
+					msg.arg1 = 2;
+	                handler.sendMessage(msg);
 				}
 			}
 		}.start();
