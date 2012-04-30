@@ -59,13 +59,12 @@ public abstract class ApplicationActivity extends Activity {
 		}
 		catch (Exception e){
 		}
-		
-		mTimer = new Timer();
-	}
+			}
 	
 	
 	   @Override
 		protected void onResume() {
+			mTimer = new Timer();
 	    	mWakeLock.acquire();
 			readFrames();
 			Toast.makeText(this, "Please, wait for the Bluetooth connexion", 80000).show();
