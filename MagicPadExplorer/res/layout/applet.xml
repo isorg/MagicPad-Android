@@ -6,13 +6,13 @@
     
     
     <ImageView android:id="@+id/applet_Image"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/ic_launcher"
         />
     
     <TextView android:id="@+id/applet_name"
-        android:text="Ceci est un test oui"
         android:textSize="15sp"
         android:gravity="center"
         android:layout_gravity="center"

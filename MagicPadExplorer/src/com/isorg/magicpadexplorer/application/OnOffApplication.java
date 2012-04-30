@@ -121,7 +121,7 @@ public class OnOffApplication extends ApplicationActivity {
     	otsu.update();
     	
     	if( imageReader.getOutput() == null )
-    	{	if (D) Log.d(TAG, "imageReader.getOutPut is null (the first time)" );
+    	{	if (D) Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
     		
     		return;
     	}

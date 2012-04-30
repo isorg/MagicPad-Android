@@ -25,10 +25,11 @@ public final class R {
         public static final int lineforpotentiometer=0x7f02000b;
         public static final int logoforphotosbrowser=0x7f02000c;
         public static final int logoforpotentiometer=0x7f02000d;
-        public static final int offbutton=0x7f02000e;
-        public static final int onbutton=0x7f02000f;
-        public static final int reflectforpotentiometer=0x7f020010;
-        public static final int vumeterapplication=0x7f020011;
+        public static final int logoisorgontheweb=0x7f02000e;
+        public static final int offbutton=0x7f02000f;
+        public static final int onbutton=0x7f020010;
+        public static final int reflectforpotentiometer=0x7f020011;
+        public static final int vumeterapplication=0x7f020012;
     }
     public static final class id {
         public static final int applet_Image=0x7f080000;

@@ -106,7 +106,7 @@ public class VumeterApplication extends ApplicationActivity {
     	calibration.update();
     	
     	if( calibration.getOutput() == null )
-    	{	if (D) Log.d(TAG, "calibration.getOutPut is null (the first time)" );
+    	{	if (D) Log.d(TAG, "calibration.getOutPut is null (the first times)" );
     		return;
     	}
     	
