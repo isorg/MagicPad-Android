@@ -67,7 +67,7 @@ public abstract class ApplicationActivity extends Activity {
 			mTimer = new Timer();
 	    	mWakeLock.acquire();
 			readFrames();
-			Toast.makeText(this, "Please, wait for the Bluetooth connexion", 80000).show();
+			Toast.makeText(this, "Please, wait for the Bluetooth connexion", Toast.LENGTH_LONG).show();
 			super.onResume();
 		}
 	    

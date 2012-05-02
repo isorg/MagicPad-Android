@@ -20,10 +20,10 @@ import android.widget.Toast;
 
 import com.isorg.magicpadexplorer.application.Applet;
 import com.isorg.magicpadexplorer.application.AppletAdapter;
-import com.isorg.magicpadexplorer.application.Application1;
-import com.isorg.magicpadexplorer.application.OnOffApplication;
+import com.isorg.magicpadexplorer.application.ConnexionTest;
+import com.isorg.magicpadexplorer.application.SmartSwitchApplication;
 import com.isorg.magicpadexplorer.application.PhotosBrowserApplication;
-import com.isorg.magicpadexplorer.application.PotentiometerApplication;
+import com.isorg.magicpadexplorer.application.TwistApplication;
 import com.isorg.magicpadexplorer.application.VumeterApplication;
 
 public class MagicPadExplorerActivity extends Activity {
@@ -62,13 +62,15 @@ public class MagicPadExplorerActivity extends Activity {
         mGrid = (GridView) findViewById(R.id.home_page);
         mGrid.setAdapter(mAdapter);
 
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.btlogo2), "Connexion Test"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.onbutton), "Smart Switch"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.vumeterapplication), "Vumeter"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logoforpotentiometer), "Twist"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logoforphotosbrowser), "Photos Browser"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logoisorgontheweb), "Isorg web site"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logoisorgontheweb), "Isorg videos"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.bt_logo), "Connexion Test"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.on_button), "Smart Switch"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_vumeter), "Vumeter"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_twist), "Twist"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_photos_browser), "Photos Browser"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_isorg_on_the_web), "Isorg web site"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_isorg_on_the_web), "Isorg videos"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.icon), "Lemon"));
+
 
         try
 		{
@@ -83,13 +85,13 @@ public class MagicPadExplorerActivity extends Activity {
         	public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
 
 			    if (mAdapter.getItem(position).getName() == "Connexion Test") {
-					Intent intent = new Intent(MagicPadExplorerActivity.this, Application1.class);
+					Intent intent = new Intent(MagicPadExplorerActivity.this, ConnexionTest.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
 			    }
 			    else if (mAdapter.getItem(position).getName() == "Smart Switch") {
-					Intent intent = new Intent(MagicPadExplorerActivity.this, OnOffApplication.class);
+					Intent intent = new Intent(MagicPadExplorerActivity.this, SmartSwitchApplication.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
@@ -99,7 +101,7 @@ public class MagicPadExplorerActivity extends Activity {
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
 			    }else if (mAdapter.getItem(position).getName() == "Twist") {
-					Intent intent = new Intent(MagicPadExplorerActivity.this, PotentiometerApplication.class);
+					Intent intent = new Intent(MagicPadExplorerActivity.this, TwistApplication.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
@@ -114,6 +116,11 @@ public class MagicPadExplorerActivity extends Activity {
 			    }else if (mAdapter.getItem(position).getName() == "Isorg videos") {
 			    	Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse("http://www.youtube.com/user/ISORGorganicsensor?feature=watch"));
 		    		startActivity(viewIntent);
+			    }else if (mAdapter.getItem(position).getName() == "Lemon") {
+					Intent intent = new Intent(MagicPadExplorerActivity.this, com.android.lemon.LemonViewerActivity.class);
+					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
+					intent.putExtra("address", magicPadAddress);
+					startActivity(intent);
 			    }else {
 	        	    Applet a = (Applet)mAdapter.getItem(position);
 					a.setName("Ca a été appuyé !");

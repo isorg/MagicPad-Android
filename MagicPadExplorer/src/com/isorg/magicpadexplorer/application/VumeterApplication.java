@@ -153,37 +153,37 @@ public class VumeterApplication extends ApplicationActivity {
 			//c.drawRect(c.getWidth()/3, c.getHeight()/3,  c.getWidth()*2/3, c.getHeight()*2/3, paint);
 
 			//First green bar
-			Drawable greenBar = getResources().getDrawable(R.drawable.barreverte);
+			Drawable greenBar = getResources().getDrawable(R.drawable.green_bar);
 			greenBar.setBounds(width*10/22, marginTopAndBottom, width*12/22, marginTopAndBottom + barHeight);
 			if (state >=1 ) greenBar.setAlpha(100);
 			greenBar.draw(c);
 			
 			//Second bar
-			Drawable greenYellowBar = getResources().getDrawable(R.drawable.barrevertejaune);
+			Drawable greenYellowBar = getResources().getDrawable(R.drawable.green_yellow_bar);
 			greenYellowBar.setBounds(width*9/22, marginTopAndBottom + barHeight + marginBetweenBars, width*13/22, marginTopAndBottom + 2*barHeight + marginBetweenBars);
 			if (state >=2 ) greenYellowBar.setAlpha(100);
 			greenYellowBar.draw(c);
 			
 			//3th yellow bar
-			Drawable yellowBar = getResources().getDrawable(R.drawable.barrejaune);
+			Drawable yellowBar = getResources().getDrawable(R.drawable.yellow_bar);
 			yellowBar.setBounds(width*8/22, marginTopAndBottom + barHeight*2 + marginBetweenBars*2, width*14/22, marginTopAndBottom + 3*barHeight + marginBetweenBars*2);
 			if (state >=3 ) yellowBar.setAlpha(100);
 			yellowBar.draw(c);
 			
 			//4th orange bar
-			Drawable orangeBar = getResources().getDrawable(R.drawable.barreorange);
+			Drawable orangeBar = getResources().getDrawable(R.drawable.orange_bar);
 			orangeBar.setBounds(width*7/22, marginTopAndBottom + barHeight*3 + marginBetweenBars*3, width*15/22, marginTopAndBottom + 4*barHeight + marginBetweenBars*3);
 			if (state >=4 ) orangeBar.setAlpha(100);
 			orangeBar.draw(c);
 			
 			//5th orange red bar
-			Drawable orangeRedBar = getResources().getDrawable(R.drawable.barreorangerouge);
+			Drawable orangeRedBar = getResources().getDrawable(R.drawable.orange_red_bar);
 			orangeRedBar.setBounds(width*6/22, marginTopAndBottom + barHeight*4 + marginBetweenBars*4, width*16/22, marginTopAndBottom + 5*barHeight + marginBetweenBars*4);
 			if (state >=5 ) orangeRedBar.setAlpha(100);
 			orangeRedBar.draw(c);
 			
 			//6th red bar
-			Drawable redBar = getResources().getDrawable(R.drawable.barrerouge);
+			Drawable redBar = getResources().getDrawable(R.drawable.red_bar);
 			redBar.setBounds(width*5/22, marginTopAndBottom + barHeight*5 + marginBetweenBars*5, width*17/22, marginTopAndBottom + 6*barHeight + marginBetweenBars*5);
 			if (state == 6 ) redBar.setAlpha(100);
 			redBar.draw(c);

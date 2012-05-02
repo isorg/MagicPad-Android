@@ -1,0 +1,15 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 21.03.2012 23:00:27
+
+newmtl _ripplane02___Default
+Ns 10.0000
+Ni 1.5000
+d 1.0000
+Tr 0.0000
+Tf 1.0000 1.0000 1.0000 
+illum 2
+Ka 0.5000 0.5000 0.5000
+Kd 0.5882 0.5882 0.5882
+Ks 0.7000 0.7000 0.7000
+Ke 0.0000 0.0000 0.0000
+map_Kd 4991436-gouttes-de-pluie-sur-la-vitre.jpg

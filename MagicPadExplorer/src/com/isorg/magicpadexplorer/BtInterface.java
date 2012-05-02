@@ -7,7 +7,7 @@ import java.io.PipedOutputStream;
 import java.util.Set;
 import java.util.UUID;
 
-import com.isorg.magicpadexplorer.application.OnOffApplication;
+import com.isorg.magicpadexplorer.application.SmartSwitchApplication;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
