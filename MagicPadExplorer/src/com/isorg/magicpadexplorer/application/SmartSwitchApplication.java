@@ -31,7 +31,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
 	private boolean state, previousObjectDetected = false;
 	
 	//For debug
-	private String TAG = "OnOffApplication";
+	private String TAG = "SmartSwitchApplication";
 	private boolean D = true;
 	
 	
@@ -48,7 +48,6 @@ public class SmartSwitchApplication extends ApplicationActivity {
     			Toast.makeText(SmartSwitchApplication.this, "Problem with Bluetooth connexion", 80000).show();
             } else if(msg.arg1 == 3) {           	
         
-            	if(D) Log.d(TAG, "imageReader[0] = " + imageReader.getOutput().data[0]);
             	
             	if (state) {
             		draw.setImageResource(R.drawable.on_button);
@@ -126,6 +125,8 @@ public class SmartSwitchApplication extends ApplicationActivity {
     		return;
     	}
     	
+    	if(D) Log.d(TAG, "objet detected = " + otsu.isObjectDetected() + "\n" + "threshold =" + otsu.getThreshold());
+
 		if (otsu.isObjectDetected() && !previousObjectDetected) {
 			state = !state;
 			previousObjectDetected = true;

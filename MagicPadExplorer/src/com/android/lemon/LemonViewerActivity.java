@@ -11,8 +11,10 @@ import com.android.lemon.model.LemonModel;
 import com.android.lemon.model.QuadModel;
 import com.android.lemon.model.WaterModel;
 import com.android.lemon.obj.ObjLoader;
-import com.isorg.magicpad.MagicPadActivity;
+import com.isorg.magicpadexplorer.MagicPadDevice;
 import com.isorg.magicpadexplorer.R;
+import com.isorg.magicpadexplorer.application.ApplicationActivity;
+import com.isorg.magicpadexplorer.application.ConnexionTest;
 //import com.isorg.magicpad.MagicPadActivity;
 
 import android.app.Activity;
@@ -29,6 +31,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
@@ -36,12 +40,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Toast;
 
 /**
  * This demo shows the interaction between the ISORG device controller 
  * and a lemon placed in a 3D scene using OpenGL ES 2.0 
  */
-public class LemonViewerActivity extends MagicPadActivity  
+public class LemonViewerActivity extends ApplicationActivity  
 {
     private GLSurfaceView mGLSurfaceView;
     private ModelRenderer mRenderer;
@@ -50,12 +55,42 @@ public class LemonViewerActivity extends MagicPadActivity
     ArrayList<BasicModel> mScene2 = new ArrayList<BasicModel>();
     
     private final static String TAG = "LemonViewer";
+    private boolean D = true;
 
-    WakeLock mWakeLock;
 
+	// Message handler
+    final Handler handlerStatus = new Handler() {
+        @Override
+		public void handleMessage(Message msg) {        	
+            if(msg.arg1 == 1) {
+            	if (D) Log.d(TAG, "Connected");
+            } else if(msg.arg1 == 2) {
+            	if (D) Log.d(TAG, "Disconnected");
+    			Toast.makeText(LemonViewerActivity.this, "Problem with Bluetooth connexion", 80000).show();
+            } else if(msg.arg1 == 3) {     
+            	LemonModel.setPressureMap( calibration.getOutput().data, 10, 10 );
+            	if (D) Log.d(TAG, "imageReader = " + imageReader.getOutput().data[0]);
+            }
+        }
+    };
+        
+    
     @Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+		magicPadDevice = new MagicPadDevice(handlerStatus);
+		
+		// BT connexion 
+		address = getIntent().getExtras().getString("address");
+		if (D) Log.d(TAG, "Address : " + address);
+		
+        imageReader = new com.isorg.magicpadexplorer.algorithm.ImageReaderAlgorithm();
+        imageReader.setInput(magicPadDevice);
+        
+        calibration = new com.isorg.magicpadexplorer.algorithm.CalibrationAlgorithm();
+        calibration.setInput(imageReader);
+		
         
         // Fullscreen window
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -94,17 +129,36 @@ public class LemonViewerActivity extends MagicPadActivity
         mGLSurfaceView.setEGLContextClientVersion(2);
         mGLSurfaceView.setRenderer(mRenderer);
         setContentView(mGLSurfaceView); 
-        
-        try
-		{
-			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK, TAG);
-		}
-		catch (Exception e)
-		{
 
-		}
+		
     } 
+    
+	// Read a frame and update the processing pipeline
+	@Override
+    protected void TimerMethod() {    	
+    	// send read frame command
+    	magicPadDevice.sendCommand(MagicPadDevice.COMMAND_FRAME);
+    	
+    	// update pipeline
+    	imageReader.update();
+    	calibration.update();
+    	
+    	if( imageReader.getOutput() == null )
+    		{
+	    		if (D) Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
+	    		return;
+    		}
+    	
+    	// Send message back
+		Message msg = handlerStatus.obtainMessage();
+		msg.arg1 = 3;
+		
+		/*Bundle b = new Bundle();
+		b.putByteArray("frame", imageReader.getOutput().data);
+		
+		msg.setData(b);*/
+		handlerStatus.sendMessage(msg);
+    }
     
     // Register a model to the renderer
     private void addModel(BasicModel model) {
@@ -116,7 +170,7 @@ public class LemonViewerActivity extends MagicPadActivity
    		mRenderer.AddModels(scene);
     }
     
-     
+    /* 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    MenuInflater inflater = getMenuInflater();
@@ -140,25 +194,26 @@ public class LemonViewerActivity extends MagicPadActivity
 	    	mRenderer.showAllModels( false );
 	    	mRenderer.showModels(mScene2, true);
 	    	return true;*/
-		}
-		return false;
-	}
+		//}
+		//return false;
+	//}
+	
 
 	@Override
     protected void onPause() {
         // Ideally a game should implement onResume() and onPause()
         // to take appropriate action when the activity looses focus
+		magicPadDevice.close();
         super.onPause();
         mGLSurfaceView.onPause();
-        mWakeLock.release();
     }
 	@Override
     protected void onResume() {
         // Ideally a game should implement onResume() and onPause()
         // to take appropriate action when the activity looses focus
+		magicPadDevice.connect(address);
         super.onResume();
         mGLSurfaceView.onResume();
-        mWakeLock.acquire();
     }
 
 	

@@ -24,8 +24,8 @@ import com.isorg.magicpadexplorer.algorithm.SwapAlgorithm;
 public abstract class ApplicationActivity extends Activity {
 	
 	//For debugging
-	boolean D = true;
-	String TAG = "ApplicationActivity";
+	private boolean D = true;
+	private String TAG = "ApplicationActivity";
 	
 	// Refresh the data
 	protected Timer mTimer;

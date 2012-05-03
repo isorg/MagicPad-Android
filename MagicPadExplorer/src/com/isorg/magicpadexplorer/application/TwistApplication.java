@@ -1,7 +1,5 @@
 package com.isorg.magicpadexplorer.application;
 
-import java.util.TimerTask;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +24,10 @@ import com.isorg.magicpadexplorer.algorithm.RotationAlgorithm;
 public class TwistApplication extends ApplicationActivity {
 	
 	private Vue mVue;
+	
+	//For debug
+	private String TAG = "TwistApplication";
+	private boolean D = true;
 	
 	// Message handler
     final Handler handlerStatus = new Handler() {

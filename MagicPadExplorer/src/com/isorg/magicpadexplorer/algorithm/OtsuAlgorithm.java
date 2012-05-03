@@ -15,8 +15,8 @@ public class OtsuAlgorithm extends ImageAlgorithm {
     private static final boolean D = false;
     
     //private static final int OBJECT_DETECTION_THRESHOLD = 220;
-    private static final int HIGH_OBJECT_DETECTION_THRESHOLD = 230;
-    private static final int LOW_OBJECT_DETECTION_THRESHOLD = 210;
+    private static final int HIGH_OBJECT_DETECTION_THRESHOLD = 235;
+    private static final int LOW_OBJECT_DETECTION_THRESHOLD = 180;
     private boolean mObjectDetected = false;
 	private double mThreshold = 0;	 
 	private double mMean = 0;
@@ -55,7 +55,6 @@ public class OtsuAlgorithm extends ImageAlgorithm {
 	 */
 	public boolean isObjectDetected() {
 		if (mObjectDetected) {
-			if (D) Log.d(TAG, "mThreshold" + mThreshold);
 			mObjectDetected = (mThreshold < HIGH_OBJECT_DETECTION_THRESHOLD);
 			return mThreshold < HIGH_OBJECT_DETECTION_THRESHOLD;
 		}

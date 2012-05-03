@@ -34,7 +34,7 @@ public class ConnexionTest extends ApplicationActivity {
 	private TextView tvImagerReader, tvCalibration, tvOtsu, tvFingerTip, tvQuartAlgo, tvSwapAlgo, tvRotationAlgo, tvConnexion = null;
 
 	//For debug
-	private String TAG = "Application1";
+	private String TAG = "ConnexionTest";
 	private Boolean D = true;
 	
 	

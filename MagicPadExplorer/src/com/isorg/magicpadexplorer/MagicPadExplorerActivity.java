@@ -44,7 +44,7 @@ public class MagicPadExplorerActivity extends Activity {
 
 
 	// For the debugging
-	private String TAG = "magicExplorerActivity";
+	private String TAG = "MagicExplorerActivity";
 	private Boolean D = true;	
     
 	
@@ -62,14 +62,14 @@ public class MagicPadExplorerActivity extends Activity {
         mGrid = (GridView) findViewById(R.id.home_page);
         mGrid.setAdapter(mAdapter);
 
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.bt_logo), "Connexion Test"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_connexion_test), "Connexion Test"));
         mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.on_button), "Smart Switch"));
         mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_vumeter), "Vumeter"));
         mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_twist), "Twist"));
         mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_photos_browser), "Photos Browser"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_lemon), "Lemon"));
         mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_isorg_on_the_web), "Isorg web site"));
         mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_isorg_on_the_web), "Isorg videos"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.icon), "Lemon"));
 
 
         try
