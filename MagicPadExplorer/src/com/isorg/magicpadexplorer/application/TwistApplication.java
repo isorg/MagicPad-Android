@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import com.isorg.magicpadexplorer.algorithm.RotationAlgorithm;
 public class TwistApplication extends ApplicationActivity {
 	
 	private Vue mVue;
+	private boolean opticalFlowView = false;
 	
 	//For debug
 	private String TAG = "TwistApplication";
@@ -100,7 +102,7 @@ public class TwistApplication extends ApplicationActivity {
 	}
 	
 	
-	private class Vue extends SurfaceView  implements SurfaceHolder.Callback{
+	private class Vue extends SurfaceView  implements SurfaceHolder.Callback {
 
 		private PotentiometerThread mThread; 
 		private double ang = 0.0;
@@ -123,61 +125,77 @@ public class TwistApplication extends ApplicationActivity {
 			int height = c.getHeight();
 			
 			paint.setColor(Color.BLACK);
+			paint.setAntiAlias(true);
+			paint.setStyle(Paint.Style.FILL);
+			paint.setTextSize(15);
+
 			c.drawRect(0, 0, c.getWidth(), c.getHeight(), paint);
 			
 			//if (D) Log.d(TAG, "canvas width " + String.valueOf(c.getWidth()) + "  canvas height " + String.valueOf(c.getHeight()));
 
 
-			Drawable lines = getResources().getDrawable(R.drawable.line_for_twist);
-			int left = width/2 - lines.getIntrinsicWidth()/2;
-			int top = height/2 - lines.getIntrinsicHeight()/2;
-			lines.setBounds( left, top, left + lines.getIntrinsicWidth(), top + lines.getIntrinsicHeight());
-			lines.draw(c);
+			if (!opticalFlowView) {
+				Drawable lines = getResources().getDrawable(R.drawable.line_for_twist);
+				int left = width/2 - lines.getIntrinsicWidth()/2;
+				int top = height/2 - lines.getIntrinsicHeight()/2;
+				lines.setBounds( left, top, left + lines.getIntrinsicWidth(), top + lines.getIntrinsicHeight());
+				lines.draw(c);
+				
+				Drawable boutton = getResources().getDrawable(R.drawable.button_for_twist);
+				left = width/2 - boutton.getIntrinsicWidth()/2;
+				top = height/2 - boutton.getIntrinsicHeight()/2;
+				boutton.setBounds( left, top, left + lines.getIntrinsicWidth(), top + lines.getIntrinsicHeight());
+				boutton.draw(c);
+				
+				Drawable reflect = getResources().getDrawable(R.drawable.reflect_for_twist);
+				left = width/2 - reflect.getIntrinsicWidth()/2; 
+				top = height/2 - reflect.getIntrinsicHeight()/2;
+				reflect.setBounds( left, top, left + lines.getIntrinsicWidth(), top + lines.getIntrinsicHeight());
+				reflect.draw(c);
+				
+				
+				c.save();
+				Bitmap hole = BitmapFactory.decodeResource(this.getResources(), R.drawable.hole_for_twist);
+				float begin = -120;
+				//  360/240 = 1.5
+				c.rotate( (float) (begin + (float) ang/1.5), width/2, height/2);
+				
+				paint.setColor(Color.GRAY);
+				c.drawBitmap(hole,left , top, null); 
+	
+				c.restore();
+				c.drawText("angle : " + rotationAlgo.getAngle(), 30, 30, paint);
+	
+				paint.setColor(Color.WHITE);
+				c.drawText("Switch to the optical flow view.", 30, 100, paint);
+				
+				/*paint.setColor(Color.CYAN);
+				c.drawPoint(20, 70, paint);
+				c.drawPoint(20, 120, paint);
+				c.drawPoint(250, 70, paint);
+				c.drawPoint(250, 120, paint);*/
+								
+			} else {
+				paint.setColor(Color.WHITE);
+				c.drawText("Switch to the potentiometer view.", 30, 100, paint);
+			}
 			
-			Drawable boutton = getResources().getDrawable(R.drawable.button_for_twist);
-			left = width/2 - boutton.getIntrinsicWidth()/2;
-			top = height/2 - boutton.getIntrinsicHeight()/2;
-			boutton.setBounds( left, top, left + lines.getIntrinsicWidth(), top + lines.getIntrinsicHeight());
-			boutton.draw(c);
-			
-			Drawable reflect = getResources().getDrawable(R.drawable.reflect_for_twist);
-			left = width/2 - reflect.getIntrinsicWidth()/2; 
-			top = height/2 - reflect.getIntrinsicHeight()/2;
-			reflect.setBounds( left, top, left + lines.getIntrinsicWidth(), top + lines.getIntrinsicHeight());
-			reflect.draw(c);
-			
-			
-			c.save();
-			Bitmap hole = BitmapFactory.decodeResource(this.getResources(), R.drawable.hole_for_twist);
-			float begin = -120;
-			//  360/240 = 1.5
-			c.rotate( (float) (begin + (float) ang/1.5), width/2, height/2);
-			
-			paint.setStyle(Paint.Style.FILL);
-			paint.setColor(Color.GRAY);
-			paint.setAntiAlias(true);
-			paint.setTextSize(15);
-			c.drawBitmap(hole,left , top, null); 
-
-			c.restore();
-			c.drawText("angle : " + rotationAlgo.getAngle(), 30, 30, paint);
-
-			
-			
-			
-			
-			/*
-	        Bitmap hole = BitmapFactory.decodeResource(getResources(), R.drawable.holeforpotentiometer);
-	        Log.d(TAG, "hole : " + hole.getWidth() + " " + hole.getHeight());
-	        Matrix mat = new Matrix();
-	        mat.postRotate( i );
-	        Log.d(TAG, "" + i);
-	        c.translate(width/2, height/2);
-	        c.scale( (float) 0.6, (float) 0.6);
-	        c.drawBitmap(hole, mat, null);
-	        */
 
 		}
+
+		@Override
+		public boolean onTouchEvent(MotionEvent event) {
+		    final int action = event.getAction();
+		    final float x = event.getX();
+		    final float y = event.getY();
+		 
+		    if (action == MotionEvent.ACTION_DOWN && x<250 && x>20 && y<120 && y > 70) {
+		    	opticalFlowView = !opticalFlowView;
+	        	Log.d(TAG, "event = down");
+	        	return true;
+		    }
+		    return super.onTouchEvent(event);
+		} 
 
 		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
