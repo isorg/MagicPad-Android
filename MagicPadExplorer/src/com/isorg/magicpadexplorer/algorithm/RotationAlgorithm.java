@@ -245,4 +245,8 @@ public class RotationAlgorithm extends ImageAlgorithm {
 	{
 		Clamped = on;
 	}
+	
+	public Mat getFlow() {
+		return mBigFlow;
+	}
 }

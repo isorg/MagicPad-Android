@@ -1,12 +1,15 @@
 package com.isorg.magicpadexplorer.application;
 
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Range;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -117,7 +120,7 @@ public class TwistApplication extends ApplicationActivity {
 		private double ang = 0.0;
 		private byte[] mFrame = null;
 		private int mThreshold;
-        private int PSZ = 25; // pixel size
+        private int PSZ = 35; // pixel size
 
 				
 		public void setAng(double a) {
@@ -204,10 +207,13 @@ public class TwistApplication extends ApplicationActivity {
         			c.save();
         			c.translate(width/2 - 5*PSZ, height/2 -  5*PSZ);
 
-		        	for(int i=0; i<10; i++) {
-		        		for(int j=0; j<10; j++) {
+	                Mat bigFlow = rotationAlgo.getFlow();
+	                Mat flow = new Mat(bigFlow, new Range(10, 20), new Range(10, 20) );
+
+		        	for(int co=0; co<flow.cols(); co++) {
+		        		for(int ro=0; ro<flow.rows(); ro++) {
 		        			// draw pixel
-		        			value = (mFrame[i*10 + j] & 0xff);
+		        			value = (mFrame[co*10 + ro] & 0xff);
 		        			
 		        			if(value >= mThreshold) 
 		        				value = 255;
@@ -215,24 +221,45 @@ public class TwistApplication extends ApplicationActivity {
 		        				value = ( int ) (value * 255.0 / mThreshold) ;
 		        		
 		        			paint.setARGB(255, value, value, value);
-		        			c.drawRect(j*PSZ, i*PSZ, (j+1)*PSZ, (i+1)*PSZ, paint);
+		        			c.drawRect(ro*PSZ, co*PSZ, (ro+1)*PSZ, (co+1)*PSZ, paint);
 		        			
 		        			// draw pixel value
-		        			if (value < mThreshold) paint.setColor(Color.RED);
-		        			else paint.setColor(Color.GREEN);
+		        			paint.setColor(Color.BLUE);
 		        			
 		        			paint.setAntiAlias(false);
 		        			paint.setTextSize(10);
-		        			c.drawText(String.valueOf(value), (j*PSZ + 5), (int)((i+0.5)*PSZ), paint);
+		        			c.drawText(String.valueOf(value), (ro*PSZ + 5), (int)((co+0.5)*PSZ), paint);
+		        			
+		        			// draw the flow
+			                paint.setAntiAlias(true);
+			                float vectorSize = 10;
+			                paint.setColor(Color.GREEN);
+
+
+		        			Point center = new Point(ro*PSZ + PSZ/2, co*PSZ +PSZ/2);
+
+	                        // vector
+	                        Point flowPoint = new Point(flow.get(co, ro)[0] , flow.get(co, ro)[1]);
+	                        Point delta = new Point(center.x + vectorSize*flowPoint.x
+	                        		,center.y + vectorSize*flowPoint.y);
+	
+	                        
+	                        // draw line
+	                        paint.setStrokeWidth(3);
+	                        c.drawLine( (float) center.x, (float) center.y, (float) delta.x, (float) delta.y, paint);
 		        		}
 		        	}
-		        	c.restore();
-		        	paint.setAntiAlias(true);
-					paint.setStyle(Paint.Style.FILL);
-					paint.setTextSize(15);
-					paint.setColor(Color.WHITE);
-					c.drawText("Switch to the potentiometer view.", 30, 30, paint);
 				}
+		        	
+	        	c.restore();
+	        	
+	        	paint.setAntiAlias(true);
+				paint.setStyle(Paint.Style.FILL);
+				paint.setTextSize(15);
+				paint.setColor(Color.WHITE);
+				c.drawText("Switch to the potentiometer view.", 30, 30, paint);
+				
+				
 			}
 		}
 
@@ -244,7 +271,7 @@ public class TwistApplication extends ApplicationActivity {
 		 
 		    if (action == MotionEvent.ACTION_DOWN && x<250 && x>20 && y<50 && y > 0) {
 		    	opticalFlowView = !opticalFlowView;
-	        	Log.d(TAG, "event = down");
+	        	if (D) Log.d(TAG, "event = down");
 	        	return true;
 		    }
 		    return super.onTouchEvent(event);
@@ -287,7 +314,7 @@ public class TwistApplication extends ApplicationActivity {
 				try {
 					c = mHolder.lockCanvas(null);
 					synchronized (mHolder) {
-						if (D) Log.d(TAG, "On lance onDraw");
+						if (D) Log.d(TAG, "Starting onDraw");
 						mVue.onDraw(c);
 					}
 				} finally {
