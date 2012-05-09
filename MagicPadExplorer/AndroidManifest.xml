@@ -24,11 +24,10 @@
             </intent-filter>
         </activity>
         
-        <activity 
-            android:name=".DeviceListActivity"
-            android:label="@string/app_name"
-        	android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-        </activity>
+        <activity android:name=".DeviceListActivity"
+                  android:label="@string/select_device"
+                  android:theme="@android:style/Theme.Dialog"
+                  android:configChanges="orientation|keyboardHidden" />
         
         <activity android:name=".application.ConnexionTest"
 			android:label="@string/app_name">
