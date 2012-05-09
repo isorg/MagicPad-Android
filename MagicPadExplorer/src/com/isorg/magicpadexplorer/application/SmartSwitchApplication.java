@@ -45,7 +45,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
             	if (D) Log.d(TAG, "Connected");
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
-    			Toast.makeText(SmartSwitchApplication.this, "Problem with Bluetooth connexion", 80000).show();
+    			Toast.makeText(SmartSwitchApplication.this, R.string.probleme_with_bluetooth, 80000).show();
             } else if(msg.arg1 == 3) {           	
         
             	

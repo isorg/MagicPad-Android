@@ -13,6 +13,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.isorg.magicpadexplorer.MagicPadDevice;
+import com.isorg.magicpadexplorer.R;
 import com.isorg.magicpadexplorer.algorithm.CalibrationAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.FingerTipAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.ImageReaderAlgorithm;
@@ -67,7 +68,7 @@ public abstract class ApplicationActivity extends Activity {
 			mTimer = new Timer();
 	    	mWakeLock.acquire();
 			readFrames();
-			Toast.makeText(this, "Please, wait for the Bluetooth connexion", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, R.string.wait_for_bluetooth, Toast.LENGTH_LONG).show();
 			super.onResume();
 		}
 	    

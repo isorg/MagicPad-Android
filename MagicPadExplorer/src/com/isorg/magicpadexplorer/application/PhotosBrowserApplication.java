@@ -3,8 +3,7 @@ package com.isorg.magicpadexplorer.application;
 import java.io.File;
 import java.util.ArrayList;
 
-import android.R.string;
-import android.R;
+import com.isorg.magicpadexplorer.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -57,7 +56,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
             	if (D) Log.d(TAG, "Connected");
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
-    			Toast.makeText(PhotosBrowserApplication.this, "Problem with Bluetooth connexion", 80000).show();
+    			Toast.makeText(PhotosBrowserApplication.this, R.string.probleme_with_bluetooth, 80000).show();
             } else if(msg.arg1 == 3) {	
             	if (D) Log.d(TAG, "swapAlgo.getSwapMotion = " + swapAlgo.getSwapMotion());
             	if (D && swapAlgo.getSwapMotion() != 0) Log.d(TAG, "swap detected = " + swapAlgo.getSwapMotion());

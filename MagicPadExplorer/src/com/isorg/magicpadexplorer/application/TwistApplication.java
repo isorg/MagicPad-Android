@@ -37,7 +37,7 @@ public class TwistApplication extends ApplicationActivity {
             	if (D) Log.d(TAG, "Connected");
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
-    			Toast.makeText(TwistApplication.this, "Problem with Bluetooth connexion", 80000).show();
+    			Toast.makeText(TwistApplication.this, R.string.probleme_with_bluetooth, 80000).show();
             } else if(msg.arg1 == 3) {	
             	mVue.setAng(rotationAlgo.getAngle());
         	}
@@ -214,7 +214,7 @@ public class TwistApplication extends ApplicationActivity {
 				try {
 					c = mHolder.lockCanvas(null);
 					synchronized (mHolder) {
-						if (D) Log.d(TAG, "On lance onDraw");
+						if (D) Log.d(TAG, "Starting onDraw");
 						mVue.onDraw(c);
 					}
 				} finally {

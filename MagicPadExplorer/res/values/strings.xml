@@ -15,8 +15,20 @@
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
     
-    <!--  Menu  -->
-    <string name="exit">Exit</string>
-    <string name="site">About ISORG</string>
+    <string name="disconnected">Disconnected</string>
+    
+    <!-- Application names -->
+    <string name="connexion_name">Connexion Test</string>
+    <string name="switch_name">Smart Switch</string>
+    <string name="vumeter_name">Vumeter</string>
+    <string name="twist_name">Twist</string>
+    <string name="photos_browser_name">Photos Browser</string>
+    <string name="lemon_name">Lemon</string>
+    <string name="web_site_name">Isorg web site</string>
+    <string name="videos_name">Isorg videos</string>
+    
+	<string name="no_bluetooth">No Bluetooth on this device</string>
+	<string name="wait_for_bluetooth">Please, wait for the Bluetooth connexion</string>
+	<string name="probleme_with_bluetooth">Problem with Bluetooth connexion</string>
     
 </resources>

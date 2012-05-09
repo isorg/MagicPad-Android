@@ -62,14 +62,14 @@ public class MagicPadExplorerActivity extends Activity {
         mGrid = (GridView) findViewById(R.id.home_page);
         mGrid.setAdapter(mAdapter);
 
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_connexion_test), "Connexion Test"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.on_button), "Smart Switch"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_vumeter), "Vumeter"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_twist), "Twist"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_photos_browser), "Photos Browser"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_lemon), "Lemon"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_isorg_on_the_web), "Isorg web site"));
-        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_isorg_on_the_web), "Isorg videos"));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_connexion_test), getResources().getString(R.string.connexion_name)));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.on_button), getResources().getString(R.string.switch_name)));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_vumeter), getResources().getString(R.string.vumeter_name)));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_twist), getResources().getString(R.string.twist_name)));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_photos_browser), getResources().getString(R.string.photos_browser_name)));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_lemon), getResources().getString(R.string.lemon_name)));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_isorg_on_the_web), getResources().getString(R.string.web_site_name)));
+        mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_isorg_on_the_web), getResources().getString(R.string.videos_name)));
 
 
         try
@@ -84,47 +84,43 @@ public class MagicPadExplorerActivity extends Activity {
         mGrid.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
 
-			    if (mAdapter.getItem(position).getName() == "Connexion Test") {
+			    if (mAdapter.getItem(position).getName() == getResources().getString(R.string.connexion_name)) {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, ConnexionTest.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
 			    }
-			    else if (mAdapter.getItem(position).getName() == "Smart Switch") {
+			    else if (mAdapter.getItem(position).getName() == getResources().getString(R.string.switch_name)) {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, SmartSwitchApplication.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
-			    }else if (mAdapter.getItem(position).getName() == "Vumeter") {
+			    }else if (mAdapter.getItem(position).getName() == getResources().getString(R.string.vumeter_name)) {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, VumeterApplication.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
-			    }else if (mAdapter.getItem(position).getName() == "Twist") {
+			    }else if (mAdapter.getItem(position).getName() == getResources().getString(R.string.twist_name)) {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, TwistApplication.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
-			    }else if (mAdapter.getItem(position).getName() == "Photos Browser") {
+			    }else if (mAdapter.getItem(position).getName() == getResources().getString(R.string.photos_browser_name)) {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, PhotosBrowserApplication.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
-			    }else if (mAdapter.getItem(position).getName() == "Isorg web site") {
+			    }else if (mAdapter.getItem(position).getName() == getResources().getString(R.string.web_site_name)) {
 			    	Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse("http://www.isorg.fr/fr/"));
 		    		startActivity(viewIntent);	
-			    }else if (mAdapter.getItem(position).getName() == "Isorg videos") {
+			    }else if (mAdapter.getItem(position).getName() == getResources().getString(R.string.videos_name)) {
 			    	Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse("http://www.youtube.com/user/ISORGorganicsensor?feature=watch"));
 		    		startActivity(viewIntent);
-			    }else if (mAdapter.getItem(position).getName() == "Lemon") {
+			    }else if (mAdapter.getItem(position).getName() == getResources().getString(R.string.lemon_name)) {
 					Intent intent = new Intent(MagicPadExplorerActivity.this, com.android.lemon.LemonViewerActivity.class);
 					if (D && magicPadAddress == null) Log.d(TAG, "address is null"); 
 					intent.putExtra("address", magicPadAddress);
 					startActivity(intent);
-			    }else {
-	        	    Applet a = (Applet)mAdapter.getItem(position);
-					a.setName("Ca a été appuyé !");
-					mAdapter.notifyDataSetChanged();
 			    }
         	}
         });
@@ -140,7 +136,7 @@ public class MagicPadExplorerActivity extends Activity {
         if (!BTParameters) {
 	        final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter(); 
 	        if (bluetoothAdapter == null)
-	        	Toast.makeText(this, "No Bluetooth on this device", Toast.LENGTH_LONG);
+	        	Toast.makeText(this, R.string.no_bluetooth, Toast.LENGTH_LONG);
 	        else {
 	        	if (!bluetoothAdapter.isEnabled()) { 
 	        		   Intent enableBlueTooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE); 

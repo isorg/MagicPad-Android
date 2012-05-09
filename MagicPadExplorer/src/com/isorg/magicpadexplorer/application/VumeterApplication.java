@@ -36,7 +36,7 @@ public class VumeterApplication extends ApplicationActivity {
             	if (D) Log.d(TAG, "Connected");
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
-    			Toast.makeText(VumeterApplication.this, "Problem with Bluetooth connexion", 80000).show();
+    			Toast.makeText(VumeterApplication.this, R.string.probleme_with_bluetooth, 80000).show();
             } else if(msg.arg1 == 3) {            	
         
             	if(D) Log.d(TAG, "imageReader[0] = " + imageReader.getOutput().data[0]);
@@ -225,7 +225,7 @@ public class VumeterApplication extends ApplicationActivity {
 				try {
 					c = mHolder.lockCanvas(null);
 					synchronized (mHolder) {
-						if (D) Log.d(TAG, "On lance onDraw");
+						if (D) Log.d(TAG, "Starting onDraw");
 						mVue.onDraw(c);
 					}
 				} finally {

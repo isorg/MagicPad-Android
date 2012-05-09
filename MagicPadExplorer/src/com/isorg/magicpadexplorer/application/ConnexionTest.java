@@ -49,7 +49,7 @@ public class ConnexionTest extends ApplicationActivity {
             	tvConnexion.setText("Connected");
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
-    			Toast.makeText(ConnexionTest.this, "Problem with Bluetooth connexion", 80000).show();
+    			Toast.makeText(ConnexionTest.this, R.string.probleme_with_bluetooth, 80000).show();
             } else if(msg.arg1 == 3) {
             	if(D) Log.d(TAG, "imageReader[0] = " + imageReader.getOutput().data[0]);
             	tvImagerReader.setText("imageReader [0] = " + String.valueOf(imageReader.getOutput().data[0]));
@@ -151,11 +151,6 @@ public class ConnexionTest extends ApplicationActivity {
     	// Send message back
 		Message msg = handlerStatus.obtainMessage();
 		msg.arg1 = 3;
-		
-		Bundle b = new Bundle();
-		b.putByteArray("frame", imageReader.getOutput().data);
-		
-		msg.setData(b);
 		handlerStatus.sendMessage(msg);
     }
 }
