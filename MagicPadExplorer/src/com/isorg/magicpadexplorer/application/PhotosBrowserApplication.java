@@ -54,6 +54,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 		public void handleMessage(Message msg) {
             if(msg.arg1 == 1) {
             	if (D) Log.d(TAG, "Connected");
+            	PhotosBrowserApplication.this.setTitle(getResources().getString(R.string.photos_browser_name) + "  -  Connected");
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(PhotosBrowserApplication.this, R.string.probleme_with_bluetooth, 80000).show();
@@ -73,6 +74,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		PhotosBrowserApplication.this.setTitle(getResources().getString(R.string.photos_browser_name) + "  -  Disconnected");
 		
 		// Setup the coverflow
 	    ImageAdapter coverImageAdapter = new ImageAdapter(this);     

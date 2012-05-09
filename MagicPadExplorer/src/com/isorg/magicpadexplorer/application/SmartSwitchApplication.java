@@ -43,6 +43,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
 		public void handleMessage(Message msg) {
             if(msg.arg1 == 1) {
             	if (D) Log.d(TAG, "Connected");
+            	SmartSwitchApplication.this.setTitle(getResources().getString(R.string.switch_name) + "  -  Connected");
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(SmartSwitchApplication.this, R.string.probleme_with_bluetooth, 80000).show();
@@ -70,6 +71,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.smart_switch_layout);
+		SmartSwitchApplication.this.setTitle(getResources().getString(R.string.switch_name) + "  -  Disconnected");
 		
 		draw = (ImageView) findViewById(R.id.draw);
 

@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.isorg.magicpadexplorer.MagicPadDevice;
@@ -42,6 +44,7 @@ public class TwistApplication extends ApplicationActivity {
 		public void handleMessage(Message msg) {
             if(msg.arg1 == 1) {
             	if (D) Log.d(TAG, "Connected");
+            	TwistApplication.this.setTitle(getResources().getString(R.string.twist_name) + "  -  Connected");
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(TwistApplication.this, R.string.probleme_with_bluetooth, 80000).show();
@@ -56,7 +59,8 @@ public class TwistApplication extends ApplicationActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		TwistApplication.this.setTitle(getResources().getString(R.string.twist_name) + "  -  Disconnected");
+		
 		mVue = new Vue(this);
 		setContentView(mVue);
 		
@@ -121,6 +125,12 @@ public class TwistApplication extends ApplicationActivity {
 		private byte[] mFrame = null;
 		private int mThreshold;
         private int PSZ = 35; // pixel size
+        private int paddingHeight = 20;
+		private int paddingWidth = 10;
+		private int xText = 50;
+		private int yText = 70;
+		
+		private int leftButton, topButton, rightButton, bottomButton;
 
 				
 		public void setAng(double a) {
@@ -165,11 +175,11 @@ public class TwistApplication extends ApplicationActivity {
 				lines.setBounds( left, top, left + lines.getIntrinsicWidth(), top + lines.getIntrinsicHeight());
 				lines.draw(c);
 				
-				Drawable boutton = getResources().getDrawable(R.drawable.button_for_twist);
-				left = width/2 - boutton.getIntrinsicWidth()/2;
-				top = height/2 - boutton.getIntrinsicHeight()/2;
-				boutton.setBounds( left, top, left + lines.getIntrinsicWidth(), top + lines.getIntrinsicHeight());
-				boutton.draw(c);
+				Drawable button = getResources().getDrawable(R.drawable.button_for_twist);
+				left = width/2 - button.getIntrinsicWidth()/2;
+				top = height/2 - button.getIntrinsicHeight()/2;
+				button.setBounds( left, top, left + lines.getIntrinsicWidth(), top + lines.getIntrinsicHeight());
+				button.draw(c);
 				
 				Drawable reflect = getResources().getDrawable(R.drawable.reflect_for_twist);
 				left = width/2 - reflect.getIntrinsicWidth()/2; 
@@ -187,18 +197,9 @@ public class TwistApplication extends ApplicationActivity {
 				paint.setColor(Color.GRAY);
 				c.drawBitmap(hole,left , top, null); 
 	
-				c.restore();	
-				paint.setAntiAlias(true);
-				paint.setStyle(Paint.Style.FILL);
-				paint.setTextSize(15);
-				paint.setColor(Color.WHITE);
-				c.drawText("Switch to the optical flow view.", 30, 30, paint);
+				c.restore();
 				
-				/*paint.setColor(Color.CYAN);
-				c.drawPoint(20, 70, paint);
-				c.drawPoint(20, 120, paint);
-				c.drawPoint(250, 70, paint);
-				c.drawPoint(250, 120, paint);*/
+				drawBlueButton(getResources().getString(R.string.switch_to_flow), c);
 								
 			} else {
         		
@@ -252,15 +253,30 @@ public class TwistApplication extends ApplicationActivity {
 				}
 		        	
 	        	c.restore();
-	        	
-	        	paint.setAntiAlias(true);
-				paint.setStyle(Paint.Style.FILL);
-				paint.setTextSize(15);
-				paint.setColor(Color.WHITE);
-				c.drawText("Switch to the potentiometer view.", 30, 30, paint);
-				
-				
+	        	drawBlueButton(getResources().getString(R.string.switch_to_potentiometer), c);
 			}
+		}
+
+		private void drawBlueButton(String text, Canvas c) {
+			Paint paint = new Paint();
+			paint.setAntiAlias(true);
+			paint.setTextSize(18);
+
+			Rect rect = new Rect();
+			paint.getTextBounds(text, 0, text.length() , rect);
+			
+			
+			Drawable blue_button = getResources().getDrawable(R.drawable.green_button_for_twist);
+			leftButton = rect.left-paddingWidth + xText;
+			topButton = rect.top-paddingHeight + yText;
+			rightButton = rect.right + paddingWidth + xText;
+			bottomButton = rect.bottom + paddingHeight + yText;
+			blue_button.setBounds( leftButton,topButton ,rightButton , bottomButton);
+			blue_button.draw(c);
+			
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setColor(Color.WHITE);
+			c.drawText(text, xText, yText, paint);			
 		}
 
 		@Override
@@ -269,7 +285,7 @@ public class TwistApplication extends ApplicationActivity {
 		    final float x = event.getX();
 		    final float y = event.getY();
 		 
-		    if (action == MotionEvent.ACTION_DOWN && x<250 && x>20 && y<50 && y > 0) {
+		    if (action == MotionEvent.ACTION_DOWN && x<rightButton && x>leftButton && y<bottomButton && y > topButton) {
 		    	opticalFlowView = !opticalFlowView;
 	        	if (D) Log.d(TAG, "event = down");
 	        	return true;

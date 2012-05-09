@@ -34,6 +34,7 @@ public class VumeterApplication extends ApplicationActivity {
 		public void handleMessage(Message msg) {
             if(msg.arg1 == 1) {
             	if (D) Log.d(TAG, "Connected");
+            	VumeterApplication.this.setTitle(getResources().getString(R.string.vumeter_name) + "  -  Connected");
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(VumeterApplication.this, R.string.probleme_with_bluetooth, 80000).show();
@@ -64,6 +65,7 @@ public class VumeterApplication extends ApplicationActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		VumeterApplication.this.setTitle(getResources().getString(R.string.vumeter_name) + "  -  Disconnected");
         
         mVue = new Vue (this);
         setContentView(mVue);

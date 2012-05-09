@@ -47,6 +47,7 @@ public class ConnexionTest extends ApplicationActivity {
             if(msg.arg1 == 1) {
             	if (D) Log.d(TAG, "Connected");
             	tvConnexion.setText("Connected");
+            	ConnexionTest.this.setTitle(getResources().getString(R.string.connexion_name) + "  -  Connected");
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(ConnexionTest.this, R.string.probleme_with_bluetooth, 80000).show();
@@ -70,6 +71,7 @@ public class ConnexionTest extends ApplicationActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.connexion_test_layout);
+		ConnexionTest.this.setTitle(getResources().getString(R.string.connexion_name) + "  -  Disconnected");
 		
 		tvConnexion = (TextView) findViewById(R.tv.connexion);
 		tvImagerReader = (TextView) findViewById(R.tv.imagereader);
