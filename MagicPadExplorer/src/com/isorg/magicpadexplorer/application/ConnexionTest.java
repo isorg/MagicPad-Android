@@ -1,17 +1,12 @@
 package com.isorg.magicpadexplorer.application;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.Log;
+import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +26,7 @@ import com.isorg.magicpadexplorer.algorithm.SwapAlgorithm;
 public class ConnexionTest extends ApplicationActivity {
 	
 	// For the GUI
-	private TextView tvImagerReader, tvCalibration, tvOtsu, tvFingerTip, tvQuartAlgo, tvSwapAlgo, tvRotationAlgo, tvConnexion = null;
+	private TextView tvImagerReader, tvCalibration, tvOtsu, tvFingerTip, tvQuartAlgo, tvSwapAlgo, tvRotationAlgo = null;
 
 	//For debug
 	private String TAG = "ConnexionTest";
@@ -46,8 +41,8 @@ public class ConnexionTest extends ApplicationActivity {
 		public void handleMessage(Message msg) {        	
             if(msg.arg1 == 1) {
             	if (D) Log.d(TAG, "Connected");
-            	tvConnexion.setText("Connected");
-            	ConnexionTest.this.setTitle(getResources().getString(R.string.connexion_name) + "  -  Connected");
+            	tvConnexionState.setText(getResources().getString(R.string.connected));
+            	ivConnexionState.setImageDrawable(getResources().getDrawable(R.drawable.ok));
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(ConnexionTest.this, R.string.probleme_with_bluetooth, 80000).show();
@@ -70,10 +65,20 @@ public class ConnexionTest extends ApplicationActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.connexion_test_layout);
-		ConnexionTest.this.setTitle(getResources().getString(R.string.connexion_name) + "  -  Disconnected");
+
 		
-		tvConnexion = (TextView) findViewById(R.tv.connexion);
+		// For the title bar
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar_layout);
+		tvTitleBar = (TextView) findViewById(R.tv.title_bar);
+		tvTitleBar.setText(getResources().getString(R.string.connexion_name));
+		tvConnexionState = (TextView) findViewById(R.id.connexion_state);
+		tvConnexionState.setText(getResources().getString(R.string.disconnected));
+		ivConnexionState = (ImageView) findViewById(R.id.connexion_state_drawable);
+		
+		
+		// Get the textView from the layout
 		tvImagerReader = (TextView) findViewById(R.tv.imagereader);
 		tvCalibration = (TextView) findViewById(R.tv.calibration);
 		tvOtsu = (TextView) findViewById(R.tv.otsu);
@@ -82,12 +87,16 @@ public class ConnexionTest extends ApplicationActivity {
 		tvSwapAlgo = (TextView) findViewById(R.tv.swapalgo);
 		tvRotationAlgo = (TextView) findViewById(R.tv.rotationalgo);
 
+		
 		magicPadDevice = new MagicPadDevice(handlerStatus);
+		
 		
 		// BT connexion 
 		address = getIntent().getExtras().getString("address");
 		if (D) Log.d(TAG, "Address : " + address);
 		
+		
+		// Pipeline
         imageReader = new ImageReaderAlgorithm();
         imageReader.setInput(magicPadDevice);
         

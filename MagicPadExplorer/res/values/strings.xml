@@ -16,6 +16,7 @@
     <string name="button_scan">Scan for devices</string>
     
     <string name="disconnected">Disconnected</string>
+    <string name="connected">Connected</string>
     
     <!-- Application names -->
     <string name="connexion_name">Connexion Test</string>

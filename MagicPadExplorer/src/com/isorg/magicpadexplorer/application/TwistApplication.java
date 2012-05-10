@@ -20,7 +20,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.isorg.magicpadexplorer.MagicPadDevice;
@@ -45,7 +48,8 @@ public class TwistApplication extends ApplicationActivity {
 		public void handleMessage(Message msg) {
             if(msg.arg1 == 1) {
             	if (D) Log.d(TAG, "Connected");
-            	TwistApplication.this.setTitle(getResources().getString(R.string.twist_name) + "  -  Connected");
+            	tvConnexionState.setText(getResources().getString(R.string.connected));
+            	ivConnexionState.setImageDrawable(getResources().getDrawable(R.drawable.ok));
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(TwistApplication.this, R.string.probleme_with_bluetooth, 80000).show();
@@ -60,17 +64,30 @@ public class TwistApplication extends ApplicationActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		TwistApplication.this.setTitle(getResources().getString(R.string.twist_name) + "  -  Disconnected");
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		
 		mVue = new Vue(this);
 		setContentView(mVue);
 		
+		
+		// For the title bar
+	    getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar_layout);
+		tvTitleBar = (TextView) findViewById(R.tv.title_bar);
+		tvTitleBar.setText(getResources().getString(R.string.twist_name));
+		tvConnexionState = (TextView) findViewById(R.id.connexion_state);
+		tvConnexionState.setText(getResources().getString(R.string.disconnected));
+		ivConnexionState = (ImageView) findViewById(R.id.connexion_state_drawable);		
+
+		
 		magicPadDevice = new MagicPadDevice(handlerStatus);
+		
 		
 		// BT connexion 
 		address = getIntent().getExtras().getString("address");
 		if (D) Log.d(TAG, "Address : " + address);
 		
+		
+		// Pipeline
         imageReader = new ImageReaderAlgorithm();
         imageReader.setInput(magicPadDevice);
         

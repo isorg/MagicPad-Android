@@ -40,6 +40,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -64,6 +66,8 @@ public class LemonViewerActivity extends ApplicationActivity
 		public void handleMessage(Message msg) {        	
             if(msg.arg1 == 1) {
             	if (D) Log.d(TAG, "Connected");
+            	tvConnexionState.setText(getResources().getString(R.string.connected));
+            	ivConnexionState.setImageDrawable(getResources().getDrawable(R.drawable.ok));
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(LemonViewerActivity.this, "Problem with Bluetooth connexion", 80000).show();
@@ -78,23 +82,9 @@ public class LemonViewerActivity extends ApplicationActivity
     @Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         
-		magicPadDevice = new MagicPadDevice(handlerStatus);
-		
-		// BT connexion 
-		address = getIntent().getExtras().getString("address");
-		if (D) Log.d(TAG, "Address : " + address);
-		
-        imageReader = new com.isorg.magicpadexplorer.algorithm.ImageReaderAlgorithm();
-        imageReader.setInput(magicPadDevice);
         
-        calibration = new com.isorg.magicpadexplorer.algorithm.CalibrationAlgorithm();
-        calibration.setInput(imageReader);
-		
-        
-        // Fullscreen window
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-                
         mRenderer = null; 
     	mGLSurfaceView = null;
     	
@@ -129,6 +119,30 @@ public class LemonViewerActivity extends ApplicationActivity
         mGLSurfaceView.setEGLContextClientVersion(2);
         mGLSurfaceView.setRenderer(mRenderer);
         setContentView(mGLSurfaceView); 
+        
+        
+        // For the title bar
+ 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar_layout);
+ 		tvTitleBar = (TextView) findViewById(R.tv.title_bar);
+ 		tvTitleBar.setText(getResources().getString(R.string.lemon_name));
+ 		tvConnexionState = (TextView) findViewById(R.id.connexion_state);
+ 		tvConnexionState.setText(getResources().getString(R.string.disconnected));
+ 		ivConnexionState = (ImageView) findViewById(R.id.connexion_state_drawable);
+     		
+     		
+		magicPadDevice = new MagicPadDevice(handlerStatus);
+		
+		// BT connexion 
+		address = getIntent().getExtras().getString("address");
+		if (D) Log.d(TAG, "Address : " + address);
+		
+        imageReader = new com.isorg.magicpadexplorer.algorithm.ImageReaderAlgorithm();
+        imageReader.setInput(magicPadDevice);
+        
+        calibration = new com.isorg.magicpadexplorer.algorithm.CalibrationAlgorithm();
+        calibration.setInput(imageReader);
+                
+
 
 		
     } 

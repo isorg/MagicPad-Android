@@ -4,12 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-	
-    <TextView android:id="@+tv/connexion"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:text="@string/disconnected"/>
-    
     
 	<TextView android:id="@+tv/imagereader"
 	    android:layout_width="wrap_content"

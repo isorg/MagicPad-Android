@@ -1,2 +1,5 @@
-bin/
-gen/
+bin/*
+bin/classes/com/isorg/magicpadexplorer/*
+bin/classes/org/opencv/*
+gen/*
+*.class

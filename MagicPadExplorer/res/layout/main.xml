@@ -11,4 +11,5 @@
 		android:stretchMode="columnWidth"
 		android:gravity="center"
 		android:layout_gravity="center"
-		android:padding="40dp"/>
+		android:padding="40dp"
+		android:background="@drawable/home_page_background"/>

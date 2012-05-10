@@ -8,8 +8,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.Log;
-import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.isorg.magicpadexplorer.MagicPadDevice;
@@ -40,6 +40,10 @@ public abstract class ApplicationActivity extends Activity {
 	protected QuartAlgorithm quartAlgo = null;
 	protected SwapAlgorithm swapAlgo = null;
 	protected RotationAlgorithm rotationAlgo = null;
+	
+	// For the title bar
+	protected TextView tvTitleBar, tvConnexionState = null;
+	protected ImageView ivConnexionState = null;
 	
 	// For the BT
 	protected MagicPadDevice magicPadDevice;
