@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -126,7 +127,7 @@ public class TwistApplication extends ApplicationActivity {
 		private int mThreshold;
         private int PSZ = 35; // pixel size
         private int paddingHeight = 20;
-		private int paddingWidth = 10;
+		private int paddingWidth = 15;
 		private int xText = 50;
 		private int yText = 70;
 		
@@ -199,7 +200,7 @@ public class TwistApplication extends ApplicationActivity {
 	
 				c.restore();
 				
-				drawBlueButton(getResources().getString(R.string.switch_to_flow), c);
+				drawGreenButton(getResources().getString(R.string.switch_to_flow), c);
 								
 			} else {
         		
@@ -221,15 +222,22 @@ public class TwistApplication extends ApplicationActivity {
 		        			else 
 		        				value = ( int ) (value * 255.0 / mThreshold) ;
 		        		
+		        			paint.setStyle(Style.FILL);
 		        			paint.setARGB(255, value, value, value);
 		        			c.drawRect(ro*PSZ, co*PSZ, (ro+1)*PSZ, (co+1)*PSZ, paint);
 		        			
+		        			paint.setStyle(Style.STROKE);
+		        			paint.setStrokeWidth(1);
+		        			paint.setColor(Color.BLACK);
+		        			c.drawRect(ro*PSZ, co*PSZ, (ro+1)*PSZ, (co+1)*PSZ, paint);
+		        			
+		        			/*
 		        			// draw pixel value
 		        			paint.setColor(Color.BLUE);
-		        			
 		        			paint.setAntiAlias(false);
 		        			paint.setTextSize(10);
-		        			c.drawText(String.valueOf(value), (ro*PSZ + 5), (int)((co+0.5)*PSZ), paint);
+		        			c.drawText(String.valueOf(value), (ro*PSZ + PSZ/2), (int)((co+PSZ/2)*PSZ), paint);
+		        			*/
 		        			
 		        			// draw the flow
 			                paint.setAntiAlias(true);
@@ -253,11 +261,11 @@ public class TwistApplication extends ApplicationActivity {
 				}
 		        	
 	        	c.restore();
-	        	drawBlueButton(getResources().getString(R.string.switch_to_potentiometer), c);
+	        	drawGreenButton(getResources().getString(R.string.switch_to_potentiometer), c);
 			}
 		}
 
-		private void drawBlueButton(String text, Canvas c) {
+		private void drawGreenButton(String text, Canvas c) {
 			Paint paint = new Paint();
 			paint.setAntiAlias(true);
 			paint.setTextSize(18);
@@ -353,7 +361,7 @@ public class TwistApplication extends ApplicationActivity {
     /********				Save/restore the State				*******/
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-    	savedInstanceState.putBoolean("OpticalFlowView ", opticalFlowView);
+    	savedInstanceState.putBoolean("OpticalFlowView", opticalFlowView);
     	super.onSaveInstanceState(savedInstanceState);
     }
     
