@@ -69,7 +69,7 @@ public class ConnexionTest extends ApplicationActivity {
             	if(D) Log.d(TAG, "imageReader[0] = " + imageReader.getOutput().data[0]);
             	mVue.setFrame(calibration.getOutput().data);
             	mVue.setThreshold( (int) otsu.getThreshold());
-            	mVue.setAng(rotationAlgo.getAngle());
+            	mVue.setAng( Math.floor(rotationAlgo.getAngle()*100.0)/100);
             	mVue.setObjectDetected(otsu.isObjectDetected());
             	// framerate
             	if(++fpsCnt >= 10) {
@@ -80,8 +80,6 @@ public class ConnexionTest extends ApplicationActivity {
             		mVue.setFps(fps);
             	}
         		mVue.setXY(fingerTip.getPosX(), fingerTip.getPosY());
-        		//if (swapAlgo.getSwapMotion() != SwapAlgorithm.SWAP_NONE)
-        		//	mVue.setSwap(swapAlgo.getSwapMotion());
         		if (quartAlgo.getQuart() != QuartAlgorithm.QUART_NONE)
         			mVue.setQuart(quartAlgo.getQuart());
         		else mVue.setQuart(QuartAlgorithm.QUART_NONE);
@@ -107,18 +105,6 @@ public class ConnexionTest extends ApplicationActivity {
 		tvConnexionState = (TextView) findViewById(R.id.connexion_state);
 		tvConnexionState.setText(getResources().getString(R.string.disconnected));
 		ivConnexionState = (ImageView) findViewById(R.id.connexion_state_drawable);
-		
-		
-		/*
-		// Get the textView from the layout
-		tvImagerReader = (TextView) findViewById(R.tv.imagereader);
-		tvCalibration = (TextView) findViewById(R.tv.calibration);
-		tvOtsu = (TextView) findViewById(R.tv.otsu);
-		tvFingerTip = (TextView) findViewById(R.tv.fingertip);
-		tvQuartAlgo = (TextView) findViewById(R.tv.quartalgo);
-		tvSwapAlgo = (TextView) findViewById(R.tv.swapalgo);
-		tvRotationAlgo = (TextView) findViewById(R.tv.rotationalgo);
-		*/
 
 		
 		magicPadDevice = new MagicPadDevice(handlerStatus);
@@ -151,7 +137,6 @@ public class ConnexionTest extends ApplicationActivity {
         
         rotationAlgo = new RotationAlgorithm();
         rotationAlgo.setInput(calibration);
-        
 	}
 	
 	
@@ -264,9 +249,9 @@ public class ConnexionTest extends ApplicationActivity {
 		public void onDraw (Canvas c) {					
 			Paint paint = new Paint();
 			int width = c.getWidth();
-			int height = c.getHeight();
+			//int height = c.getHeight();
 			
-			// To keep the black background
+			// To keep the black background and refresh the draw
 			paint.setColor(Color.BLACK);
 			c.drawRect(0, 0, c.getWidth(), c.getHeight(), paint);
 
@@ -331,9 +316,9 @@ public class ConnexionTest extends ApplicationActivity {
 	                paint.setColor(Color.RED);
 	                paint.setAntiAlias(true);
 	                paint.setStyle(Style.FILL);
-	                c.drawText("Red point : finger tip", PSZ*3+PSZ/2, PSZ*10 +20, paint);
+	                c.drawText(getResources().getString(R.string.red_point), PSZ*3+PSZ/2, PSZ*10 +20, paint);
 	                paint.setColor(Color.BLUE);
-	                c.drawText("Blue point : quarter", PSZ*3 + PSZ/2, PSZ*10+40, paint);
+	                c.drawText(getResources().getString(R.string.blue_point), PSZ*3 + PSZ/2, PSZ*10+40, paint);
 				}
                 
                 // In the optical flow view
@@ -392,10 +377,10 @@ public class ConnexionTest extends ApplicationActivity {
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			
-			c.drawText("Framerate = " + mFps, 0, 0, paint);
-			c.drawText("Average = " + this.mThreshold, 0, 40, paint);
-			c.drawText("Object detected = " + mObjectDetected, 0, 80, paint);
-			c.drawText("Angle = " + mAngle, 0, 120, paint);
+			c.drawText(getResources().getString(R.string.framerate) + mFps, 0, 0, paint);
+			c.drawText(getResources().getString(R.string.average) + this.mThreshold, 0, 40, paint);
+			c.drawText(getResources().getString(R.string.object) + mObjectDetected, 0, 80, paint);
+			c.drawText(getResources().getString(R.string.angle) + mAngle, 0, 120, paint);
 			c.restore();
 		}
 

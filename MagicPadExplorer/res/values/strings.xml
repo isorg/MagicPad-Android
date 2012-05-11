@@ -37,5 +37,13 @@
 	<string name="switch_to_flow">Switch to the optical flow view</string>
 	<string name="switch_to_potentiometer">Switch to the potentiometer view</string>
 	<string name="switch_to_value_grid">Switch to the value grid view</string>
+	
+	<!-- Connexion test -->
+	<string name="red_point">Red point : finger tip</string>
+	<string name="blue_point">Blue point : quarter</string>
+	<string name="framerate">Framerate = </string>
+	<string name="average">Average = </string>
+	<string name="object">Object detected = </string>
+	<string name="angle">Angle = </string>
     
 </resources>
