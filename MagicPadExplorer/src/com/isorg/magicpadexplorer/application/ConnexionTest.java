@@ -9,6 +9,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
@@ -78,14 +79,12 @@ public class ConnexionTest extends ApplicationActivity {
             		lastTime = System.currentTimeMillis();
             		mVue.setFps(fps);
             	}
-            	
-            	/*tvImagerReader.setText("imageReader [0] = " + String.valueOf(imageReader.getOutput().data[0]));
-            	tvCalibration.setText("calibration [0] = " + String.valueOf(calibration.getOutput().data[0]  & 0xff));
-            	tvOtsu.setText("Object detected = " + String.valueOf(otsu.isObjectDetected()));
-            	tvFingerTip.setText("finger tip x = " + String.valueOf( fingerTip.getPosX()) + "finger tip Y = " + String.valueOf(fingerTip.getPosY()));
-            	tvQuartAlgo.setText("quart = " + String.valueOf(quartAlgo.getQuart() ));
-            	tvSwapAlgo.setText( "swap = " + String.valueOf(swapAlgo.getSwapMotion()));
-            	tvRotationAlgo.setText("rotate = " + String.valueOf(rotationAlgo.getAngle() ));*/
+        		mVue.setXY(fingerTip.getPosX(), fingerTip.getPosY());
+        		//if (swapAlgo.getSwapMotion() != SwapAlgorithm.SWAP_NONE)
+        		//	mVue.setSwap(swapAlgo.getSwapMotion());
+        		if (quartAlgo.getQuart() != QuartAlgorithm.QUART_NONE)
+        			mVue.setQuart(quartAlgo.getQuart());
+        		else mVue.setQuart(QuartAlgorithm.QUART_NONE);
             }
         }
     };    
@@ -206,14 +205,15 @@ public class ConnexionTest extends ApplicationActivity {
 		private byte[] mFrame = null;
 		private int mThreshold;
         private int PSZ = 40; // pixel size
+        private double  mX = 0, mY = 0;
         private double mFps = 0;
         private double mAngle = 0;
         private boolean mObjectDetected = false;
-        
+        private int mQuart = QuartAlgorithm.QUART_NONE;
+
         
         private boolean opticalFlowView = false;
         
-        private int paddingCenter = 20;
         private int paddingHeight = 20;
 		private int paddingWidth = 15;
 		private int xText = 100;
@@ -250,6 +250,15 @@ public class ConnexionTest extends ApplicationActivity {
         	mObjectDetected = od;
         }
         
+        public void setXY(double x, double y) {
+        	mX = x;
+        	mY = y;
+        }
+        
+        public void setQuart(int q) {
+        	mQuart = q;
+        }
+        
         
 		@Override
 		public void onDraw (Canvas c) {					
@@ -265,7 +274,7 @@ public class ConnexionTest extends ApplicationActivity {
 			//   DRAW THE RIGHT PART   //
 			if (mFrame != null) {
 				c.save();
-				c.translate(width/2+33, 100);
+				c.translate(width/2+33, 140);
         		int value = 0;
 
                 Mat bigFlow = rotationAlgo.getFlow();
@@ -293,7 +302,40 @@ public class ConnexionTest extends ApplicationActivity {
 		        			c.drawText(String.valueOf(value), (ro*PSZ + 10), (int)((co+0.5)*PSZ), paint);
 		        		}
 		        	}
+		        	
+		        	// draw finger tip
+		        	paint.setColor(Color.RED);
+		        	paint.setStrokeWidth(5);
+		        	c.drawCircle((float)(PSZ*(10*mX + 5)), (float)(PSZ*(10*mY + 5)), (float)20.0, paint);
+		        	
+		        	// draw quart
+		        	paint.setColor(Color.BLUE);
+		        	Path path = new Path();
+		        	
+		        	if(mQuart == QuartAlgorithm.QUART_BOTTOM_LEFT) {
+		        		//canvas.drawRect(0*PSZ, 5*PSZ, 5*PSZ, 10*PSZ, paint);
+		        		path.addCircle(2*PSZ, 7*PSZ, 20, Path.Direction.CW);
+		        	} else if(mQuart == QuartAlgorithm.QUART_BOTTOM_RIGHT) {
+		        		//canvas.drawRect(5*PSZ, 5*PSZ, 10*PSZ, 10*PSZ, paint);
+		        		path.addCircle(8*PSZ, 8*PSZ, 20, Path.Direction.CW);
+		        	} else if(mQuart == QuartAlgorithm.QUART_TOP_LEFT) {
+		        		//canvas.drawRect(0*PSZ, 0*PSZ, 5*PSZ, 5*PSZ, paint);
+		        		path.addCircle(2*PSZ, 2*PSZ, 20, Path.Direction.CW);
+		        	} else if(mQuart == QuartAlgorithm.QUART_TOP_RIGHT) {
+		        		//canvas.drawRect(5*PSZ, 0*PSZ, 10*PSZ, 5*PSZ, paint);	
+		        		path.addCircle(8*PSZ, 2*PSZ, 20, Path.Direction.CW);
+		        	}
+		        	c.drawPath(path, paint);
+		        	
+	                // Add the caption
+	                paint.setColor(Color.RED);
+	                paint.setAntiAlias(true);
+	                paint.setStyle(Style.FILL);
+	                c.drawText("Red point : finger tip", PSZ*3+PSZ/2, PSZ*10 +20, paint);
+	                paint.setColor(Color.BLUE);
+	                c.drawText("Blue point : quarter", PSZ*3 + PSZ/2, PSZ*10+40, paint);
 				}
+                
                 // In the optical flow view
                 else {
 					for(int co=0; co<flow.cols(); co++) {
@@ -333,7 +375,7 @@ public class ConnexionTest extends ApplicationActivity {
 	                        paint.setStrokeWidth(3);
 	                        c.drawLine( (float) center.x, (float) center.y, (float) delta.x, (float) delta.y, paint);
 		        		}
-		        	}	
+		        	}
 				}
 			}
 			c.restore();
@@ -344,8 +386,9 @@ public class ConnexionTest extends ApplicationActivity {
 			//------------------------//
 			//   DRAW THE LEFT PART   //
 			c.save();
-			c.translate(width/2-300, 110);
+			c.translate(width/2-300, 150);
 			paint.setStyle(Style.FILL);
+			paint.setAntiAlias(true);
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			
@@ -353,8 +396,6 @@ public class ConnexionTest extends ApplicationActivity {
 			c.drawText("Average = " + this.mThreshold, 0, 40, paint);
 			c.drawText("Object detected = " + mObjectDetected, 0, 80, paint);
 			c.drawText("Angle = " + mAngle, 0, 120, paint);
-
-			
 			c.restore();
 		}
 
@@ -413,7 +454,6 @@ public class ConnexionTest extends ApplicationActivity {
 				} catch (InterruptedException e) {}
 			}
 		}
-		
 	}
 	
 	
