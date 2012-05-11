@@ -33,8 +33,9 @@
 	<string name="wait_for_bluetooth">Please, wait for the Bluetooth connexion</string>
 	<string name="probleme_with_bluetooth">Problem with Bluetooth connexion</string>
 	
-	<!-- Twist Application -->
+	<!-- Green Button Text -->
 	<string name="switch_to_flow">Switch to the optical flow view</string>
 	<string name="switch_to_potentiometer">Switch to the potentiometer view</string>
+	<string name="switch_to_value_grid">Switch to the value grid view</string>
     
 </resources>
