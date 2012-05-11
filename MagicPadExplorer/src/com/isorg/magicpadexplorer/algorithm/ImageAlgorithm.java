@@ -2,7 +2,6 @@ package com.isorg.magicpadexplorer.algorithm;
 
 import com.isorg.magicpadexplorer.MagicPadFrame;
 
-import android.util.Log;
 
 /*
  * Define generic algorithm
@@ -16,9 +15,6 @@ import android.util.Log;
  *      MagicPadFrame frame = algo.getOutput();
  */
 public abstract class ImageAlgorithm {
-	// Debugging
-    private static final String TAG = "ImageAlgorithm";
-    private static final boolean D = true;
     
     protected ImageAlgorithm mInputAlgorithm = null;
     protected MagicPadFrame mInputFrame = null;

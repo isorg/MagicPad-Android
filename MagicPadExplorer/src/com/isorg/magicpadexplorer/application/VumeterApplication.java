@@ -1,6 +1,5 @@
 package com.isorg.magicpadexplorer.application;
 
-import java.util.TimerTask;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

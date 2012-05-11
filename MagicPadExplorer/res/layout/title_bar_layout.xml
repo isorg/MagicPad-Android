@@ -8,7 +8,7 @@
     <ImageView android:id="@+id/isorg_logo_title_bar"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:src="@drawable/small_isorg_logo"
+        android:src="@drawable/small_white_isorg_logo"
         android:layout_alignParentLeft="true"/>
     
     <TextView android:id="@+tv/title_bar"
@@ -17,7 +17,8 @@
 	    android:textSize="17sp"
 	    android:padding="5dp"
 	    android:layout_toRightOf="@id/isorg_logo_title_bar"
-	    android:layout_alignBottom="@id/isorg_logo_title_bar"/>
+	    android:layout_alignBottom="@id/isorg_logo_title_bar"
+	    android:textColor="#000000"/>
     
     <ImageView android:id="@+id/connexion_state_drawable" 
         android:layout_width="wrap_content"
@@ -34,6 +35,7 @@
 	    android:paddingRight="15dp"
 	    android:paddingBottom="5dp"
 	    android:layout_alignParentRight="true"
-	    android:layout_alignBottom="@id/connexion_state_drawable"/>
+	    android:layout_alignBottom="@id/connexion_state_drawable"
+	    android:textColor="#000000"/>
     
 </RelativeLayout>

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.FloatMath;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MotionEvent;
 
 
@@ -85,7 +84,7 @@ class TouchSurfaceView extends GLSurfaceView {
 	// touch events
 	private final int NONE = 0;
 	private final int DRAG = 0;
-	private final int ZOOM = 0;
+	//private final int ZOOM = 0;
 	
 	// pinch to zoom
 	float oldDist = 100.0f;

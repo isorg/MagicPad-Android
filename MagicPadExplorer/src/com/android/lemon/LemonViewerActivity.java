@@ -4,41 +4,24 @@
 package com.android.lemon;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.android.lemon.model.BasicModel;
 import com.android.lemon.model.LemonModel;
 import com.android.lemon.model.QuadModel;
 import com.android.lemon.model.WaterModel;
-import com.android.lemon.obj.ObjLoader;
+//import com.android.lemon.obj.ObjLoader;
 import com.isorg.magicpadexplorer.MagicPadDevice;
 import com.isorg.magicpadexplorer.R;
 import com.isorg.magicpadexplorer.application.ApplicationActivity;
-import com.isorg.magicpadexplorer.application.ConnexionTest;
-//import com.isorg.magicpad.MagicPadActivity;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
+
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -99,7 +82,7 @@ public class LemonViewerActivity extends ApplicationActivity
     	mScene1.add( new LemonModel( this, "Lemon/lemonld9.obj"));
     	
     	// Logo
-    	Bitmap logo = BitmapFactory.decodeResource(ModelRenderer.GetContext().getResources(), R.drawable.logoisorg);
+    	Bitmap logo = BitmapFactory.decodeResource(ModelRenderer.GetContext().getResources(), R.drawable.gray_isorg_logo);
     	mScene1.add( new QuadModel(this, logo, 0.2f, 0.15f, 0.4f));
     	
     	
@@ -175,9 +158,11 @@ public class LemonViewerActivity extends ApplicationActivity
     }
     
     // Register a model to the renderer
+	// Never used
+	/*
     private void addModel(BasicModel model) {
     	mRenderer.AddModel(model);
-    }
+    }*/
     
  // Register a list of models to the renderer
     private void addModels(ArrayList<BasicModel> scene) {

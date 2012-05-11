@@ -3,33 +3,34 @@
 
 package com.android.lemon.model;
 
+/*
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStream;*/
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+/*import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.Lock;*/
 
 import com.android.lemon.Material;
 import com.android.lemon.ModelRenderer;
 import com.android.lemon.obj.ObjFace;
-import com.android.lemon.obj.ObjModel;
+//import com.android.lemon.obj.ObjModel;
 import com.android.lemon.utils.ConvolutionMatrix;
 import com.android.lemon.utils.MatrixUtils;
 import com.isorg.magicpadexplorer.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+//import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
-import android.graphics.Color;
+//import android.graphics.Color;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
-import android.opengl.Matrix;
-import android.util.Log;
+//import android.opengl.GLUtils;
+//import android.opengl.Matrix;
+//import android.util.Log;
 
 public class LemonModel extends BasicModel {
 		
@@ -288,7 +289,7 @@ public class LemonModel extends BasicModel {
 				
 					float[] v1 = new float[3];
 					float[] v2 = new float[3];
-					float[] v3 = new float[3];
+					//float[] v3 = new float[3];
 					float[] normal = new float[3];
 					int fcount =  mObj.faces.size();
 					

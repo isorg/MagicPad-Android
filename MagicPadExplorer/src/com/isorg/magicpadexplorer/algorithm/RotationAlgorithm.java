@@ -9,12 +9,7 @@ import org.opencv.core.Range;
 import org.opencv.core.Scalar;
 import org.opencv.video.Video;
 
-import android.util.Log;
-
 public class RotationAlgorithm extends ImageAlgorithm {
-	// Debugging
-    private static final String TAG = "RotationAlgorithm";
-    private static final boolean D = true;
     
     private Mat mInputMat = new Mat(10, 10, CvType.CV_8U );
     

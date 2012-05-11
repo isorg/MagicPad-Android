@@ -3,27 +3,28 @@
 
 package com.android.lemon.model;
 
-import java.io.IOException;
+/*import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Vector;
+import java.util.Vector;*/
 
 import com.android.lemon.ModelRenderer;
-import com.android.lemon.obj.ObjFace;
-import com.android.lemon.obj.ObjModel;
+//import com.android.lemon.obj.ObjFace;
+//import com.android.lemon.obj.ObjModel;
 import com.isorg.magicpadexplorer.R;
 
 import android.content.Context;
+import android.opengl.GLES20;
+/*
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.util.Log;
+import android.util.Log;*/
 
 public class WaterModel extends BasicModel {
 		

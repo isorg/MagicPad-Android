@@ -147,30 +147,30 @@ public class SwapAlgorithm extends ImageAlgorithm {
 		
 		// side detection
 		int L=0, R=0, T=0, B=0;
-		int W = 0; // number of object pixels
+		//int W = 0; // number of object pixels
 		// top left
 		for(int r=0; r<5; r++)
 			for(int c=0; c<5; c++)
 				if(mInputFrame.data[10*r+c] > 0) {
-					L++; T++; W++;
+					L++; T++; //W++;
 				}	
 		// top right
 		for(int r=0; r<5; r++)
 			for(int c=5; c<10; c++)
 				if(mInputFrame.data[10*r+c] > 0) {
-					R++; T++; W++;
+					R++; T++; //W++;
 				}	
 		// bottom left
 		for(int r=5; r<10; r++)
 			for(int c=0; c<5; c++)
 				if(mInputFrame.data[10*r+c] > 0) {
-					L++; B++; W++;
+					L++; B++; //W++;
 				}		
 		// bottom right
 		for(int r=5; r<10; r++)
 			for(int c=5; c<10; c++)
 				if(mInputFrame.data[10*r+c] > 0) {
-					R++; B++; W++;
+					R++; B++; //W++;
 				}
 		//if(D) Log.d(TAG, "LBTR:" + L + " " + B + " " + T + " " + R);
 		
@@ -232,10 +232,12 @@ public class SwapAlgorithm extends ImageAlgorithm {
 		while(mClickQueue.size() > 8) {
 			mClickQueue.remove(0);
 		}
+		
+		/*
 		String s = "";
 		for(int i=0; i<mClickQueue.size(); i++) {
 			s += mClickQueue.get(i).intValue() + " ";
-		}
+		}*/
 		//if(D) Log.d(TAG, ">>> " + s);
 		
 		if(mClickQueue.size() < 8) return false;

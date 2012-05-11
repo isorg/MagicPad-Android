@@ -24,10 +24,6 @@ import com.isorg.magicpadexplorer.algorithm.SwapAlgorithm;
 
 public abstract class ApplicationActivity extends Activity {
 	
-	//For debugging
-	private boolean D = true;
-	private String TAG = "ApplicationActivity";
-	
 	// Refresh the data
 	protected Timer mTimer;
 	protected static final int FRAME_PERIOD = 75;
@@ -60,7 +56,7 @@ public abstract class ApplicationActivity extends Activity {
         try
 		{
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, TAG);
+			mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, this.getLocalClassName());
 		}
 		catch (Exception e){
 		}

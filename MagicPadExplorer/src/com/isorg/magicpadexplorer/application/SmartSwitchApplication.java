@@ -1,19 +1,10 @@
 package com.isorg.magicpadexplorer.application;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Window;
 import android.widget.ImageView;

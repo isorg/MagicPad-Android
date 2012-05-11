@@ -19,7 +19,7 @@ public class OtsuAlgorithm extends ImageAlgorithm {
     private static final int LOW_OBJECT_DETECTION_THRESHOLD = 180;
     private boolean mObjectDetected = false;
 	private double mThreshold = 0;	 
-	private double mMean = 0;
+	//private double mMean = 0;
 	private double mObjMean = 0;
 
 	@Override
@@ -34,10 +34,13 @@ public class OtsuAlgorithm extends ImageAlgorithm {
 		mThreshold = otsu();
 		
 		// compute mean
+		// Never used
+		/*
 		mMean = 0;
 		for(int idx=0; idx<mInputFrame.data.length; ++idx)
 			mMean += mInputFrame.data[idx] & 0xff;
-		mMean /= mInputFrame.data.length;			
+		mMean /= mInputFrame.data.length;
+		*/			
 		
 		// segmentation
 		segmentation();

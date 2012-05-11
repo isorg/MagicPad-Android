@@ -203,7 +203,7 @@ public class ObjLoader {
 				} else if (tokens[0].equals("vt")) {
 					for (int i=1; i<3; i++) {
 						float val = Float.parseFloat(tokens[i]);
-						float val1 = (float) Math.floor( val );
+						//float val1 = (float) Math.floor( val );
 						texCoords.add( val /*- val1*/ );
 						
 						// XXX - TODO - handle 3d textures

@@ -1,15 +1,10 @@
 package com.isorg.magicpadexplorer.algorithm;
 
 
-import android.util.Log;
-
 /*
  * Detect if an object is present in the input image
  */
 public class ObjectDetectionAlgorithm extends ImageAlgorithm {
-	// Debugging
-    private static final String TAG = "ObjectDetectionAlgorithm";
-    private static final boolean D = true;
     
 	// percentage of frame coverage
 	private double mObjThreshold = 0.98;

@@ -198,6 +198,8 @@ public class CalibrationAlgorithm extends ImageAlgorithm {
 	
 	// fix non linearity issues 'cross effect'
 	// apply pow(2) to central cross
+	// Never used
+	/*
 	private void nonLinearity() {
 		for(int r=0; r<10; r++) {
 			for(int c=0; c<10; c++) {
@@ -209,7 +211,7 @@ public class CalibrationAlgorithm extends ImageAlgorithm {
 				}
 			}
 		}
-	}
+	}*/
 	
 	@Override
 	public void process() {
