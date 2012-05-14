@@ -39,7 +39,7 @@ public class TwistApplication extends ApplicationActivity {
 	
 	//For debug
 	private String TAG = "TwistApplication";
-	private boolean D = true;
+	private boolean D = false;
 	
 	// Message handler
     final Handler handlerStatus = new Handler() {
@@ -104,8 +104,7 @@ public class TwistApplication extends ApplicationActivity {
 
 	@Override
 	protected void onResume() {
-		magicPadDevice.connect((address));
-		
+		magicPadDevice.connect(address);
 		super.onResume();
 	}
 
@@ -125,6 +124,11 @@ public class TwistApplication extends ApplicationActivity {
     	calibration.update();
     	otsu.update();
     	rotationAlgo.update();
+    	
+    	if (imageReader.getOutput()== null) {
+    		Log.d(TAG, "imageReader.getOutPut is null (the first times)");
+    		return;
+    	}
     	
     	if (calibration.getOutput() != null) {
 	    	if (D) Log.d(TAG, "rotationAlgo.getAngle() = " + rotationAlgo.getAngle());

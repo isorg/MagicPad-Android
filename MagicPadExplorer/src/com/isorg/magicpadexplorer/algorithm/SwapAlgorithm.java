@@ -16,7 +16,7 @@ import android.util.Log;
 public class SwapAlgorithm extends ImageAlgorithm {
 	// Debugging
     private static final String TAG = "SwapAlgorithm";
-    private static final boolean D = true;
+    private static final boolean D = false;
     
     // Swap direction codes
     public static final int SWAP_NONE = 0;

@@ -25,7 +25,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
 	
 	//For debug
 	private String TAG = "SmartSwitchApplication";
-	private boolean D = true;
+	private boolean D = false;
 	
 	
 	
@@ -81,12 +81,12 @@ public class SmartSwitchApplication extends ApplicationActivity {
 
 		
 		magicPadDevice = new MagicPadDevice(handlerStatus);
-		
+
 		
 		// BT connexion 
 		address = getIntent().getExtras().getString("address");
 		if (D) Log.d(TAG, "Address : " + address);
-		
+
 		
 		//Pipeline
         imageReader = new ImageReaderAlgorithm();
@@ -103,7 +103,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
 	
     @Override
 	protected void onResume() {
-		magicPadDevice.connect((address));
+		magicPadDevice.connect(address);
 		super.onResume();
 	}
     
@@ -130,8 +130,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
     	otsu.update();
     	
     	if( imageReader.getOutput() == null )
-    	{	if (D) Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
-    		
+    	{	Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
     		return;
     	}
     	

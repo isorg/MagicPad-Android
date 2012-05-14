@@ -8,6 +8,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,5 +97,13 @@ public abstract class ApplicationActivity extends Activity {
 	    protected void TimerMethod() {    	
 		}
 
+	    @Override
+	    public boolean onKeyDown(int keyCode, KeyEvent event){
+	    	if ((keyCode == KeyEvent.KEYCODE_HOME)) {
+	    		Log.d("Application Activity", "home pressed");
+	    		finish();
+	    		}
+	    	return super.onKeyDown(keyCode, event);
+	    } 
 
 }

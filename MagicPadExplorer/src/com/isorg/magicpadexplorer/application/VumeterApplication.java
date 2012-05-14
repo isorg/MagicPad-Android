@@ -24,7 +24,7 @@ import com.isorg.magicpadexplorer.algorithm.ImageReaderAlgorithm;
 public class VumeterApplication extends ApplicationActivity {
 	
 	//For debugging
-	boolean D = true;
+	boolean D = false;
 	String TAG = "VumeterApplication";
 	
 	private Vue mVue;
@@ -124,7 +124,7 @@ public class VumeterApplication extends ApplicationActivity {
     	calibration.update();
     	
     	if( calibration.getOutput() == null )
-    	{	if (D) Log.d(TAG, "calibration.getOutPut is null (the first times)" );
+    	{	Log.d(TAG, "calibration.getOutPut is null (the first times)" );
     		return;
     	}
     	

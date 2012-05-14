@@ -43,7 +43,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 
 	//For debug
 	String TAG = "PhotosBrowserApplication";
-	boolean D = true;
+	boolean D = false;
 	
 	private CoverFlow coverFlow; 
 	private Handler mHandler = new Handler();
@@ -62,11 +62,11 @@ public class PhotosBrowserApplication extends ApplicationActivity {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(PhotosBrowserApplication.this, R.string.probleme_with_bluetooth, 80000).show();
             } else if(msg.arg1 == 3) {	
-            	if (D) Log.d(TAG, "swapAlgo.getSwapMotion = " + swapAlgo.getSwapMotion());
-            	if (D && swapAlgo.getSwapMotion() != 0) Log.d(TAG, "swap detected = " + swapAlgo.getSwapMotion());
-            	if (swapAlgo.getSwapMotion() == SwapAlgorithm.SWAP_LEFT_TO_RIGHT) {
+            	int swap = msg.getData().getInt("swap");
+            	if (D) Log.d(TAG, "swapAlgo.getSwapMotion = " + swap);
+            	if (swap == SwapAlgorithm.SWAP_LEFT_TO_RIGHT) {
             		mHandler.postDelayed(nextPictureLeft, 0);
-            	} else if (swapAlgo.getSwapMotion() == SwapAlgorithm.SWAP_RIGHT_TO_LEFT) {
+            	} else if (swap == SwapAlgorithm.SWAP_RIGHT_TO_LEFT) {
             		mHandler.postDelayed(nextPictureRight, 0);
             	}
         	}
@@ -330,7 +330,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 
 	@Override
 	protected void onResume() {
-		magicPadDevice.connect((address));
+		magicPadDevice.connect(address);
 		super.onResume();
 	}
 
@@ -353,10 +353,20 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	swapAlgo.update();
     	
     	if (D) Log.d(TAG, "swapAlgo.getSwapMotion = " + swapAlgo.getSwapMotion());
-    	if (swapAlgo.getSwapMotion() != 0) {
+    	if (imageReader.getOutput()== null) {
+    		Log.d(TAG, "imageReader.getOutPut is null (the first times)");
+    		return;
+    	}
+    	
+    	// Send message back
+    	int swap = swapAlgo.getSwapMotion();
+    	if (swap != SwapAlgorithm.SWAP_NONE) {
 			Message msg = handlerStatus.obtainMessage();
 			msg.arg1 = 3;
-			handlerStatus.sendMessage(msg);	
+			Bundle b = new Bundle();
+			b.putInt("swap", swap);
+			msg.setData(b);
+			handlerStatus.sendMessage(msg);
     	}
     	
 	}

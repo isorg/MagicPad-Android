@@ -42,7 +42,7 @@ public class ConnexionTest extends ApplicationActivity {
 
 	//For debug
 	private String TAG = "ConnexionTest";
-	private Boolean D = true;
+	private Boolean D = false;
 	
 	private Vue mVue;
 	private int fpsCnt = 0;
@@ -73,9 +73,11 @@ public class ConnexionTest extends ApplicationActivity {
             	if(++fpsCnt >= 10) {
             		fpsCnt = 0;
             		long t = System.currentTimeMillis() - lastTime;
-            		fps = 10*1000/t;
-            		lastTime = System.currentTimeMillis();
-            		mVue.setFps(fps);
+            		if (t != 0) {
+	            		fps = 10*1000/t;
+	            		lastTime = System.currentTimeMillis();
+	            		mVue.setFps(fps);
+            		}
             	}
         		mVue.setXY(fingerTip.getPosX(), fingerTip.getPosY());
         		if (quartAlgo.getQuart() != QuartAlgorithm.QUART_NONE)
@@ -166,11 +168,10 @@ public class ConnexionTest extends ApplicationActivity {
     	quartAlgo.update();
     	rotationAlgo.update();
     	
-    	if( imageReader.getOutput() == null )
-    		{
-	    		if (D) Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
-	    		return;
-    		}
+    	if( imageReader.getOutput() == null ) {
+    		Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
+    		return;
+		}
     	
     	// Send message back
 		Message msg = handlerStatus.obtainMessage();
@@ -291,6 +292,7 @@ public class ConnexionTest extends ApplicationActivity {
 		        	}
 		        	
 		        	// draw finger tip
+		        	paint.setStyle(Style.STROKE);
 		        	paint.setColor(Color.RED);
 		        	paint.setStrokeWidth(5);
 		        	c.drawCircle((float)(PSZ*(10*mX + 5)), (float)(PSZ*(10*mY + 5)), (float)20.0, paint);
