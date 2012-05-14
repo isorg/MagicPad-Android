@@ -36,10 +36,17 @@ public class CalibrationAlgorithm extends ImageAlgorithm {
 	// light matrix
 	private double mLight[] = new double[IMG_SIZE];
 	
+	
+	
+	public Pixel[] getMask() {
+		return mMask;
+	}
+	
+	
 	/*
 	 *  Pixel 
 	 */
-	private class Pixel {
+	public class Pixel {
 		// alive=working or dead pixel
 		public boolean alive = false;
 				

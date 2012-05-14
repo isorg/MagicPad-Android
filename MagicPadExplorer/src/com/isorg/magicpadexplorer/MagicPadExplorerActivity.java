@@ -56,7 +56,7 @@ public class MagicPadExplorerActivity extends Activity {
         // Fill the grid
         mAdapter = new AppletAdapter(this);
 
-        mGrid = (GridView) findViewById(R.id.home_page);
+        mGrid = (GridView) findViewById(R.id.home_page_grid);
         mGrid.setAdapter(mAdapter);
 
         mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_connexion_test), getResources().getString(R.string.connexion_name)));

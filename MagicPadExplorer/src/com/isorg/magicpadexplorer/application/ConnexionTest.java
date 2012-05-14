@@ -9,9 +9,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,20 +28,17 @@ import android.widget.Toast;
 import com.isorg.magicpadexplorer.MagicPadDevice;
 import com.isorg.magicpadexplorer.R;
 import com.isorg.magicpadexplorer.algorithm.CalibrationAlgorithm;
+import com.isorg.magicpadexplorer.algorithm.CalibrationAlgorithm.Pixel;
 import com.isorg.magicpadexplorer.algorithm.FingerTipAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.ImageReaderAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.OtsuAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.QuartAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.RotationAlgorithm;
-import com.isorg.magicpadexplorer.algorithm.SwapAlgorithm;
 
 
 
 
 public class ConnexionTest extends ApplicationActivity {
-	
-	// For the GUI
-	//private TextView tvImagerReader, tvCalibration, tvOtsu, tvFingerTip, tvQuartAlgo, tvSwapAlgo, tvRotationAlgo = null;
 
 	//For debug
 	private String TAG = "ConnexionTest";
@@ -51,6 +48,7 @@ public class ConnexionTest extends ApplicationActivity {
 	private int fpsCnt = 0;
 	private long lastTime = 0;
 	private double fps = 0;
+	private Pixel[] mask = null;
 	
 	
 	
@@ -121,6 +119,7 @@ public class ConnexionTest extends ApplicationActivity {
         
         calibration = new CalibrationAlgorithm();
         calibration.setInput(imageReader);
+        mask = calibration.getMask();
         
         otsu = new OtsuAlgorithm();
         otsu.setInput(calibration);
@@ -131,9 +130,6 @@ public class ConnexionTest extends ApplicationActivity {
         
         quartAlgo = new QuartAlgorithm();
         quartAlgo.setInput(fingerTip);
-        
-        swapAlgo = new SwapAlgorithm();
-        swapAlgo.setInput(otsu);
         
         rotationAlgo = new RotationAlgorithm();
         rotationAlgo.setInput(calibration);
@@ -168,7 +164,6 @@ public class ConnexionTest extends ApplicationActivity {
     	otsu.update();
     	fingerTip.update();
     	quartAlgo.update();
-    	swapAlgo.update();
     	rotationAlgo.update();
     	
     	if( imageReader.getOutput() == null )
@@ -272,6 +267,7 @@ public class ConnexionTest extends ApplicationActivity {
 		        			// draw pixel
 		        			value = (mFrame[co*10 + ro] & 0xff);
 		        			
+		        			
 		        			if(value >= mThreshold) 
 		        				value = 255;
 		        			else 
@@ -285,6 +281,12 @@ public class ConnexionTest extends ApplicationActivity {
 		        			if (value > mThreshold) paint.setColor(Color.RED);
 		        			else paint.setColor(Color.GREEN);
 		        			c.drawText(String.valueOf(value), (ro*PSZ + 10), (int)((co+0.5)*PSZ), paint);
+		        			
+		        			if (!mask [co*10 + ro].alive) {
+		        				paint.setStyle(Style.STROKE);
+		        				paint.setColor(Color.RED);
+		        				c.drawRect(ro*PSZ, co*PSZ, (ro+1)*PSZ-1, (co+1)*PSZ-1, paint);
+		        			}
 		        		}
 		        	}
 		        	
