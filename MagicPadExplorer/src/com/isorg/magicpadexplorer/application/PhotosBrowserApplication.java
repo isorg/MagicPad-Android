@@ -63,7 +63,6 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     			Toast.makeText(PhotosBrowserApplication.this, R.string.probleme_with_bluetooth, 80000).show();
             } else if(msg.arg1 == 3) {	
             	int swap = msg.getData().getInt("swap");
-            	if (D) Log.d(TAG, "swapAlgo.getSwapMotion = " + swap);
             	if (swap == SwapAlgorithm.SWAP_LEFT_TO_RIGHT) {
             		mHandler.postDelayed(nextPictureLeft, 0);
             	} else if (swap == SwapAlgorithm.SWAP_RIGHT_TO_LEFT) {
@@ -352,15 +351,15 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	otsu.update();
     	swapAlgo.update();
     	
-    	if (D) Log.d(TAG, "swapAlgo.getSwapMotion = " + swapAlgo.getSwapMotion());
     	if (imageReader.getOutput()== null) {
     		Log.d(TAG, "imageReader.getOutPut is null (the first times)");
     		return;
     	}
     	
     	// Send message back
-    	int swap = swapAlgo.getSwapMotion();
+    	int swap = swapAlgo.getLastSwapMotion();
     	if (swap != SwapAlgorithm.SWAP_NONE) {
+    		if (D) Log.d(TAG, "swap detected = " + swap);
 			Message msg = handlerStatus.obtainMessage();
 			msg.arg1 = 3;
 			Bundle b = new Bundle();

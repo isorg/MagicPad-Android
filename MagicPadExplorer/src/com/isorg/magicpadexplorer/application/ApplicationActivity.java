@@ -94,16 +94,6 @@ public abstract class ApplicationActivity extends Activity {
 	    }
 		
 		// Read a frame and update the processing pipeline
-	    protected void TimerMethod() {    	
-		}
-
-	    @Override
-	    public boolean onKeyDown(int keyCode, KeyEvent event){
-	    	if ((keyCode == KeyEvent.KEYCODE_HOME)) {
-	    		Log.d("Application Activity", "home pressed");
-	    		finish();
-	    		}
-	    	return super.onKeyDown(keyCode, event);
-	    } 
+	    protected void TimerMethod() {}
 
 }
