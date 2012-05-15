@@ -33,6 +33,7 @@ import android.widget.ImageView.ScaleType;
 
 import com.isorg.magicpadexplorer.MagicPadDevice;
 import com.isorg.magicpadexplorer.algorithm.CalibrationAlgorithm;
+import com.isorg.magicpadexplorer.algorithm.HorizontalSwapAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.ImageReaderAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.OtsuAlgorithm;
 import com.isorg.magicpadexplorer.algorithm.SwapAlgorithm;
@@ -47,6 +48,8 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 	
 	private CoverFlow coverFlow; 
 	private Handler mHandler = new Handler();
+	
+	private HorizontalSwapAlgorithm horizontalSwapAlgo = null;
 
 	
 	
@@ -122,8 +125,13 @@ public class PhotosBrowserApplication extends ApplicationActivity {
         otsu = new OtsuAlgorithm();
         otsu.setInput(calibration);
         
+        horizontalSwapAlgo = new HorizontalSwapAlgorithm();
+        horizontalSwapAlgo.setInput(otsu);
+        
+        /*
         swapAlgo = new SwapAlgorithm();
         swapAlgo.setInput(otsu);
+        */
 	}
 	
 	
@@ -349,7 +357,8 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	imageReader.update();
     	calibration.update();
     	otsu.update();
-    	swapAlgo.update();
+    	horizontalSwapAlgo.update();
+    	//swapAlgo.update();
     	
     	if (imageReader.getOutput()== null) {
     		Log.d(TAG, "imageReader.getOutPut is null (the first times)");
@@ -357,7 +366,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	}
     	
     	// Send message back
-    	int swap = swapAlgo.getLastSwapMotion();
+    	int swap = horizontalSwapAlgo.getLastSwapMotion();
     	if (swap != SwapAlgorithm.SWAP_NONE) {
     		if (D) Log.d(TAG, "swap detected = " + swap);
 			Message msg = handlerStatus.obtainMessage();

@@ -47,6 +47,9 @@ public abstract class ApplicationActivity extends Activity {
 	protected MagicPadDevice magicPadDevice;
 	protected String address;
 	
+	// For change orientation;
+	private int mOrientation;
+	
 	//For keep the screen bright
     WakeLock mWakeLock;
     
@@ -54,6 +57,7 @@ public abstract class ApplicationActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
+		mOrientation = getResources().getConfiguration().orientation;
 
         try
 		{
@@ -82,6 +86,7 @@ public abstract class ApplicationActivity extends Activity {
 			super.onPause();
 		}
 		
+		
 		// Start reading frames at regular intervals
 		protected void readFrames()
 	    {
@@ -92,7 +97,19 @@ public abstract class ApplicationActivity extends Activity {
 				}
 			}, 0, FRAME_PERIOD);
 	    }
-		
+
+
+		@Override
+		protected void onStop() {
+			if (mOrientation != getResources().getConfiguration().orientation) {
+				mOrientation = getResources().getConfiguration().orientation;
+			} else {
+				finish();
+			}
+			super.onStop();
+		}
+
+
 		// Read a frame and update the processing pipeline
 	    protected void TimerMethod() {}
 
