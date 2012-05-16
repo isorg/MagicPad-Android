@@ -53,10 +53,10 @@ public class MagicPadExplorerActivity extends Activity {
         setContentView(R.layout.main);
         
                 
-        // Fill the grid
-        mAdapter = new AppletAdapter(this);
-
+        // Fill the grid with the costumed adapter AppletAdapter 
         mGrid = (GridView) findViewById(R.id.home_page_grid);
+        
+        mAdapter = new AppletAdapter(this);
         mGrid.setAdapter(mAdapter);
 
         mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_for_connexion_test), getResources().getString(R.string.connexion_name)));
@@ -69,13 +69,12 @@ public class MagicPadExplorerActivity extends Activity {
         mAdapter.addItem(new Applet(getResources().getDrawable(R.drawable.logo_isorg_on_the_web), getResources().getString(R.string.videos_name)));
 
 
+        // For initialize the wakeLock
         try
-		{
-			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		{	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, TAG);
-		}
-		catch (Exception e){
-		}
+		} catch (Exception e){}
+        
         
         // The listener for items
         mGrid.setOnItemClickListener(new OnItemClickListener() {
@@ -121,15 +120,15 @@ public class MagicPadExplorerActivity extends Activity {
 			    }
         	}
         });
-        
-		
     }
     
     
     @Override
 	protected void onResume() {
+    	// Start the wake lock
         mWakeLock.acquire();
 
+        // If the bluetooth parameters aren't set up and the bluetooth is enabled, run the request_connect_device activity 
         if (!BTParameters) {
 	        final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter(); 
 	        if (bluetoothAdapter == null)
@@ -139,28 +138,31 @@ public class MagicPadExplorerActivity extends Activity {
 	        		   Intent enableBlueTooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE); 
 	        		   startActivityForResult(enableBlueTooth, REQUEST_CODE_ENABLE_BLUETOOTH);
 	        	}
-	        	else connectToDevice();
+	        	else {
+	        		Intent serverIntent = new Intent(this, DeviceListActivity.class);
+	        		startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+	        	}
 	        	BTParameters = true;
 	        }
         }
     	super.onResume();
 	}
     
+    
     protected void onPause() {
+    	// Stop the wake lock
     	mWakeLock.release();
+    	
     	super.onPause();
     }
     
    
 
     
+    /********			Save/restore the State			*******/
     
-    /********				Save/restore the State				*******/
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-    	// Save UI state changes to the savedInstanceState.
-    	// This bundle will be passed to onCreate if the process is
-    	// killed and restarted.
     	savedInstanceState.putBoolean("BTParameters", BTParameters);
     	savedInstanceState.putString("address", magicPadAddress);
     	super.onSaveInstanceState(savedInstanceState);
@@ -172,19 +174,10 @@ public class MagicPadExplorerActivity extends Activity {
     	BTParameters = savedInstanceState.getBoolean("BTParameters");
     	magicPadAddress = savedInstanceState.getString("address");
     	super.onRestoreInstanceState(savedInstanceState);
-    	// Restore UI state from the savedInstanceState.
-    	// This bundle has also been passed to onCreate.
     }
     
     
     /********			Methods for BlueTooth				*********/
-	
-	// Connect to a device
-	private void connectToDevice()
-	{
-		Intent serverIntent = new Intent(this, DeviceListActivity.class);
-		startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
-	}
     
 	// Called after activity requested something
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -196,21 +189,17 @@ public class MagicPadExplorerActivity extends Activity {
 				// Get the device MAC address
 				String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
 				if (D) Log.d(TAG, "BT list choose: " + address);
-				//magicPadDevice.connect(address);
 				magicPadAddress = address;
 			}
-			else
-			{
-				Toast.makeText(this, R.string.bt_no_device_found, Toast.LENGTH_SHORT).show();
-	            finish();
-			}
+			else finish();
 			break;
 
         case REQUEST_CODE_ENABLE_BLUETOOTH:
             // When the request to enable Bluetooth returns
             if(resultCode == Activity.RESULT_OK) {
                 // Bluetooth is now enabled, so connect to a MagicPAD           	
-            	connectToDevice();
+        		Intent serverIntent = new Intent(this, DeviceListActivity.class);
+        		startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
             	Log.d(TAG, "BT enabled: continue");
             } else {
                 // User did not enable Bluetooth or an error occurred
@@ -220,8 +209,6 @@ public class MagicPadExplorerActivity extends Activity {
             }
         }
     }	
-	
-
 }
 
 

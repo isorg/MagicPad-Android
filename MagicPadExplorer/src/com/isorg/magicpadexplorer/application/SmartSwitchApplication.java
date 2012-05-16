@@ -19,14 +19,13 @@ import com.isorg.magicpadexplorer.algorithm.OtsuAlgorithm;
 
 public class SmartSwitchApplication extends ApplicationActivity {
 	
-	// For the GUI
-	private ImageView draw = null;
+	// GUI
+	private ImageView on_off_image = null;
 	private boolean state, previousObjectDetected = false;
 	
-	//For debug
+	// debug
 	private String TAG = "SmartSwitchApplication";
 	private boolean D = false;
-	
 	
 	
 	
@@ -41,16 +40,15 @@ public class SmartSwitchApplication extends ApplicationActivity {
             } else if(msg.arg1 == 2) {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(SmartSwitchApplication.this, R.string.probleme_with_bluetooth, 80000).show();
-            } else if(msg.arg1 == 3) {           	
-        
-            	
+            } else if(msg.arg1 == 3) {
+            	// Draw and play sound depending on the state
             	if (state) {
-            		draw.setImageResource(R.drawable.on_button);
+            		on_off_image.setImageResource(R.drawable.on_button);
             		MediaPlayer mediaPlayer = MediaPlayer.create(SmartSwitchApplication.this, R.raw.onbutton);
             		mediaPlayer.start();
             	}
             	else{
-            		draw.setImageResource(R.drawable.off_button);
+            		on_off_image.setImageResource(R.drawable.off_button);
             		MediaPlayer mediaPlayer = MediaPlayer.create(SmartSwitchApplication.this, R.raw.offbutton);
             		mediaPlayer.start();
             	}
@@ -58,9 +56,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
         }
     };    
 	
-	
-	/**********     METHODS      *********/
-
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,7 +64,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
 		setContentView(R.layout.smart_switch_layout);
 		
 		
-		// For the title bar
+		// title bar
 	    getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar_layout);
 		tvTitleBar = (TextView) findViewById(R.tv.title_bar);
 		tvTitleBar.setText(getResources().getString(R.string.switch_name));
@@ -77,13 +73,12 @@ public class SmartSwitchApplication extends ApplicationActivity {
 		ivConnexionState = (ImageView) findViewById(R.id.connexion_state_drawable);	
 		
 		
-		draw = (ImageView) findViewById(R.id.draw);
-
-		
-		magicPadDevice = new MagicPadDevice(handlerStatus);
+		on_off_image = (ImageView) findViewById(R.id.on_off_image);
 
 		
 		// BT connexion 
+		magicPadDevice = new MagicPadDevice(handlerStatus);
+
 		address = getIntent().getExtras().getString("address");
 		if (D) Log.d(TAG, "Address : " + address);
 
@@ -129,6 +124,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
     	calibration.update();
     	otsu.update();
     	
+    	// The first frames are always null
     	if( imageReader.getOutput() == null )
     	{	Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
     		return;
@@ -136,6 +132,7 @@ public class SmartSwitchApplication extends ApplicationActivity {
     	
     	if(D) Log.d(TAG, "objet detected = " + otsu.isObjectDetected() + "\n" + "threshold =" + otsu.getThreshold());
 
+    	// Update state
 		if (otsu.isObjectDetected() && !previousObjectDetected) {
 			state = !state;
 			previousObjectDetected = true;

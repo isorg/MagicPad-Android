@@ -65,11 +65,13 @@ public class DeviceListActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        // To initialize the wakeLock
         try
 		{	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, TAG);
 		}
 		catch (Exception e){}
+        // To start the wake lock
         mWakeLock.acquire();
 
 
@@ -138,6 +140,7 @@ public class DeviceListActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         
+        // Stop the wake lock
         mWakeLock.release();
 
         // Make sure we're not doing discovery anymore

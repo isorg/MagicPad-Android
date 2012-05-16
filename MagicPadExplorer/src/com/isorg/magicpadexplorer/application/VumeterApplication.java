@@ -27,7 +27,7 @@ public class VumeterApplication extends ApplicationActivity {
 	boolean D = false;
 	String TAG = "VumeterApplication";
 	
-	private Vue mVue;
+	private CustomizedView mView;
 
 	
 	// Message handler
@@ -53,13 +53,13 @@ public class VumeterApplication extends ApplicationActivity {
             	
             	if (D) Log.d(TAG, "moyenne = " + String.valueOf(average));
 
-            	if (average >= 249) mVue.setState(0);
-            	else if ( (average >= (255-42)) &&  (average < 249)) mVue.setState(1);
-            	else if ( (average >= (255-42*2)) &&  (average < (255-42))) mVue.setState(2);
-            	else if ( (average >= (255-42*3)) &&  (average < (255-42*2))) mVue.setState(3);
-            	else if ( (average >= (255-42*4)) &&  (average < (255-42*3))) mVue.setState(4);
-            	else if ( (average >= (255-42*5)) &&  (average < (255-42*4))) mVue.setState(5);
-            	else if ( (average >= (255-42*6)) &&  (average < (255-42*5))) mVue.setState(6);
+            	if (average >= 249) mView.setState(0);
+            	else if ( (average >= (255-42)) &&  (average < 249)) mView.setState(1);
+            	else if ( (average >= (255-42*2)) &&  (average < (255-42))) mView.setState(2);
+            	else if ( (average >= (255-42*3)) &&  (average < (255-42*2))) mView.setState(3);
+            	else if ( (average >= (255-42*4)) &&  (average < (255-42*3))) mView.setState(4);
+            	else if ( (average >= (255-42*5)) &&  (average < (255-42*4))) mView.setState(5);
+            	else if ( (average >= (255-42*6)) &&  (average < (255-42*5))) mView.setState(6);
 
         	}
         }
@@ -70,11 +70,11 @@ public class VumeterApplication extends ApplicationActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         
-        mVue = new Vue (this);
-        setContentView(mVue);
+		mView = new CustomizedView(this);
+        setContentView(mView);
         
         
-        // For the title bar
+        // title bar
 	    getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar_layout);
 		tvTitleBar = (TextView) findViewById(R.tv.title_bar);
 		tvTitleBar.setText(getResources().getString(R.string.vumeter_name));
@@ -123,29 +123,30 @@ public class VumeterApplication extends ApplicationActivity {
     	imageReader.update();
     	calibration.update();
     	
+    	// The first frames are always null
     	if( calibration.getOutput() == null )
     	{	Log.d(TAG, "calibration.getOutPut is null (the first times)" );
     		return;
     	}
     	
-
+    	// Send message back
 		Message msg = handlerStatus.obtainMessage();
 		msg.arg1 = 3;
 		handlerStatus.sendMessage(msg);
 	}
     
 
-	private class Vue extends SurfaceView  implements SurfaceHolder.Callback{
+	private class CustomizedView extends SurfaceView  implements SurfaceHolder.Callback{
 
 		private VumeterThread mThread;
 		
 		private int state = 0;
 
 		
-		public Vue (Context context) {
+		public CustomizedView (Context context) {
 			super(context);
 			getHolder().addCallback(this);
-			mThread = new VumeterThread (getHolder(), this);
+			mThread = new VumeterThread (getHolder());
 		}
 		
 		
@@ -168,15 +169,14 @@ public class VumeterApplication extends ApplicationActivity {
 			c.drawRect(0, 0, c.getWidth(), c.getHeight(), paint);
 			
 			if (D) Log.d(TAG, "canvas width " + String.valueOf(c.getWidth()) + "  canvas height " + String.valueOf(c.getHeight()));
-			//c.drawRect(c.getWidth()/3, c.getHeight()/3,  c.getWidth()*2/3, c.getHeight()*2/3, paint);
 
-			//First green bar
+			//1st green bar
 			Drawable greenBar = getResources().getDrawable(R.drawable.green_bar);
 			greenBar.setBounds(width*10/22, marginTopAndBottom, width*12/22, marginTopAndBottom + barHeight);
 			if (state >=1 ) greenBar.setAlpha(100);
 			greenBar.draw(c);
 			
-			//Second bar
+			//2nd yellow green bar
 			Drawable greenYellowBar = getResources().getDrawable(R.drawable.green_yellow_bar);
 			greenYellowBar.setBounds(width*9/22, marginTopAndBottom + barHeight + marginBetweenBars, width*13/22, marginTopAndBottom + 2*barHeight + marginBetweenBars);
 			if (state >=2 ) greenYellowBar.setAlpha(100);
@@ -233,7 +233,6 @@ public class VumeterApplication extends ApplicationActivity {
 		
 		private boolean mRun = false;
 		private SurfaceHolder mHolder;
-		private Vue mVue;
 		
 		@Override
 		public void run() {
@@ -244,7 +243,7 @@ public class VumeterApplication extends ApplicationActivity {
 					c = mHolder.lockCanvas(null);
 					synchronized (mHolder) {
 						if (D) Log.d(TAG, "Starting onDraw");
-						mVue.onDraw(c);
+						mView.onDraw(c);
 					}
 				} finally {
 					if (c!= null) mHolder.unlockCanvasAndPost(c);
@@ -256,9 +255,8 @@ public class VumeterApplication extends ApplicationActivity {
 			mRun = r;
 		}
 
-		public VumeterThread (SurfaceHolder h, Vue v) {
+		public VumeterThread (SurfaceHolder h) {
 			mHolder = h;
-			mVue = v;
 		}
 	}
 

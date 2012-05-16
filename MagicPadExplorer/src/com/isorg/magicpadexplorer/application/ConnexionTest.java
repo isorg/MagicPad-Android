@@ -40,11 +40,13 @@ import com.isorg.magicpadexplorer.algorithm.RotationAlgorithm;
 
 public class ConnexionTest extends ApplicationActivity {
 
-	//For debug
+	// Debug
 	private String TAG = "ConnexionTest";
 	private Boolean D = false;
 	
-	private Vue mVue;
+	// Customized view
+	private CustomizedView mView;
+	
 	private int fpsCnt = 0;
 	private long lastTime = 0;
 	private double fps = 0;
@@ -65,10 +67,10 @@ public class ConnexionTest extends ApplicationActivity {
     			Toast.makeText(ConnexionTest.this, R.string.probleme_with_bluetooth, 80000).show();
             } else if(msg.arg1 == 3) {
             	if(D) Log.d(TAG, "imageReader[0] = " + imageReader.getOutput().data[0]);
-            	mVue.setFrame(calibration.getOutput().data);
-            	mVue.setThreshold( (int) otsu.getThreshold());
-            	mVue.setAng( Math.floor(rotationAlgo.getAngle()*100.0)/100);
-            	mVue.setObjectDetected(otsu.isObjectDetected());
+            	mView.setFrame(calibration.getOutput().data);
+            	mView.setThreshold( (int) otsu.getThreshold());
+            	mView.setAng( Math.floor(rotationAlgo.getAngle()*100.0)/100);
+            	mView.setObjectDetected(otsu.isObjectDetected());
             	// framerate
             	if(++fpsCnt >= 10) {
             		fpsCnt = 0;
@@ -76,29 +78,27 @@ public class ConnexionTest extends ApplicationActivity {
             		if (t != 0) {
 	            		fps = 10*1000/t;
 	            		lastTime = System.currentTimeMillis();
-	            		mVue.setFps(fps);
+	            		mView.setFps(fps);
             		}
             	}
-        		mVue.setXY(fingerTip.getPosX(), fingerTip.getPosY());
+            	mView.setXY(fingerTip.getPosX(), fingerTip.getPosY());
         		if (quartAlgo.getQuart() != QuartAlgorithm.QUART_NONE)
-        			mVue.setQuart(quartAlgo.getQuart());
-        		else mVue.setQuart(QuartAlgorithm.QUART_NONE);
+        			mView.setQuart(quartAlgo.getQuart());
+        		else mView.setQuart(QuartAlgorithm.QUART_NONE);
             }
         }
     };    
 	
 	
-	/**********     METHODS      *********/
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
-		mVue = new Vue(this);
-		setContentView(mVue);
+		mView = new CustomizedView(this);
+		setContentView(mView);
 		
-		// For the title bar
+		// title bar
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar_layout);
 		tvTitleBar = (TextView) findViewById(R.tv.title_bar);
 		tvTitleBar.setText(getResources().getString(R.string.connexion_name));
@@ -110,7 +110,7 @@ public class ConnexionTest extends ApplicationActivity {
 		magicPadDevice = new MagicPadDevice(handlerStatus);
 		
 		
-		// BT connexion 
+		// BT address 
 		address = getIntent().getExtras().getString("address");
 		if (D) Log.d(TAG, "Address : " + address);
 		
@@ -168,6 +168,7 @@ public class ConnexionTest extends ApplicationActivity {
     	quartAlgo.update();
     	rotationAlgo.update();
     	
+    	// The first frames are always null
     	if( imageReader.getOutput() == null ) {
     		Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
     		return;
@@ -180,7 +181,7 @@ public class ConnexionTest extends ApplicationActivity {
     }
 	
 	
-	private class Vue extends SurfaceView  implements SurfaceHolder.Callback {
+	private class CustomizedView extends SurfaceView  implements SurfaceHolder.Callback {
 
 		private ConnexionTestThread mThread; 
 		private byte[] mFrame = null;
@@ -192,25 +193,25 @@ public class ConnexionTest extends ApplicationActivity {
         private boolean mObjectDetected = false;
         private int mQuart = QuartAlgorithm.QUART_NONE;
 
-        
+        // To know if we have to draw the optical flow or the grid
         private boolean opticalFlowView = false;
         
+        // To draw the green button and set up the event on it 
         private int paddingHeight = 20;
 		private int paddingWidth = 15;
 		private int xText = 100;
 		private int yText = 60;
-		
 		private int leftButton, topButton, rightButton, bottomButton;
 
-				
-		public void setAng(double a) {
-			mAngle = a;
-		}
 		
-		public Vue (Context context) {
+		public CustomizedView (Context context) {
 			super(context);
 			getHolder().addCallback(this);
-			mThread = new ConnexionTestThread (getHolder(), this);
+			mThread = new ConnexionTestThread (getHolder()); //, this);
+		}
+		
+		public void setAng(double a) {
+			mAngle = a;
 		}
 
         public void setFrame(byte[] frame)
@@ -245,44 +246,46 @@ public class ConnexionTest extends ApplicationActivity {
 		public void onDraw (Canvas c) {					
 			Paint paint = new Paint();
 			int width = c.getWidth();
-			//int height = c.getHeight();
 			
 			// To keep the black background and refresh the draw
 			paint.setColor(Color.BLACK);
 			c.drawRect(0, 0, c.getWidth(), c.getHeight(), paint);
 
 			//-------------------------//
-			//   DRAW THE RIGHT PART   //
+			//   DRAW THE RIGHT SIDE   //
+			//-------------------------//
 			if (mFrame != null) {
 				c.save();
 				c.translate(width/2+33, 140);
         		int value = 0;
 
+        		// To get the flow, calculated by openCV
                 Mat bigFlow = rotationAlgo.getFlow();
                 Mat flow = new Mat(bigFlow, new Range(10, 20), new Range(10, 20) );
                 
                 // In the value grid view
                 if (!opticalFlowView) {
+                	// For each pixel
 		        	for(int co=0; co<flow.cols(); co++) {
 		        		for(int ro=0; ro<flow.rows(); ro++) {
 		        			// draw pixel
 		        			value = (mFrame[co*10 + ro] & 0xff);
-		        			
-		        			
 		        			if(value >= mThreshold) 
 		        				value = 255;
 		        			else 
 		        				value = ( int ) (value * 255.0 / mThreshold) ;
 		        		
+		        			// Draw the gray rectangle
 		        			paint.setStyle(Style.FILL);
 		        			paint.setARGB(255, value, value, value);
 		        			c.drawRect(ro*PSZ, co*PSZ, (ro+1)*PSZ, (co+1)*PSZ, paint);
 		        			
-		        			// Draw pixel value
+		        			// Write pixel value
 		        			if (value > mThreshold) paint.setColor(Color.RED);
 		        			else paint.setColor(Color.GREEN);
 		        			c.drawText(String.valueOf(value), (ro*PSZ + 10), (int)((co+0.5)*PSZ), paint);
 		        			
+		        			// Show the dead pixels
 		        			if (!mask [co*10 + ro].alive) {
 		        				paint.setStyle(Style.STROKE);
 		        				paint.setColor(Color.RED);
@@ -302,16 +305,12 @@ public class ConnexionTest extends ApplicationActivity {
 		        	Path path = new Path();
 		        	
 		        	if(mQuart == QuartAlgorithm.QUART_BOTTOM_LEFT) {
-		        		//canvas.drawRect(0*PSZ, 5*PSZ, 5*PSZ, 10*PSZ, paint);
 		        		path.addCircle(2*PSZ, 7*PSZ, 20, Path.Direction.CW);
 		        	} else if(mQuart == QuartAlgorithm.QUART_BOTTOM_RIGHT) {
-		        		//canvas.drawRect(5*PSZ, 5*PSZ, 10*PSZ, 10*PSZ, paint);
 		        		path.addCircle(8*PSZ, 8*PSZ, 20, Path.Direction.CW);
 		        	} else if(mQuart == QuartAlgorithm.QUART_TOP_LEFT) {
-		        		//canvas.drawRect(0*PSZ, 0*PSZ, 5*PSZ, 5*PSZ, paint);
 		        		path.addCircle(2*PSZ, 2*PSZ, 20, Path.Direction.CW);
 		        	} else if(mQuart == QuartAlgorithm.QUART_TOP_RIGHT) {
-		        		//canvas.drawRect(5*PSZ, 0*PSZ, 10*PSZ, 5*PSZ, paint);	
 		        		path.addCircle(8*PSZ, 2*PSZ, 20, Path.Direction.CW);
 		        	}
 		        	c.drawPath(path, paint);
@@ -369,11 +368,12 @@ public class ConnexionTest extends ApplicationActivity {
 			}
 			c.restore();
 			
+			// Draw the green button with the good text
 			if (opticalFlowView) drawGreenButton(getResources().getString(R.string.switch_to_value_grid), c);
 			else drawGreenButton(getResources().getString(R.string.switch_to_flow), c);
 			
 			//------------------------//
-			//   DRAW THE LEFT PART   //
+			//   DRAW THE LEFT SIDE   //
 			c.save();
 			c.translate(width/2-300, 150);
 			paint.setStyle(Style.FILL);
@@ -382,21 +382,25 @@ public class ConnexionTest extends ApplicationActivity {
 			paint.setTextSize(15);
 			
 			c.drawText(getResources().getString(R.string.framerate) + mFps, 0, 0, paint);
-			c.drawText(getResources().getString(R.string.average) + this.mThreshold, 0, 40, paint);
+			c.drawText(getResources().getString(R.string.average) + mThreshold, 0, 40, paint);
 			c.drawText(getResources().getString(R.string.object) + mObjectDetected, 0, 80, paint);
 			c.drawText(getResources().getString(R.string.angle) + mAngle, 0, 120, paint);
 			c.restore();
 		}
 
 		private void drawGreenButton(String text, Canvas c) {
+			// Set up the paint
 			Paint paint = new Paint();
 			paint.setAntiAlias(true);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setColor(Color.WHITE);
 			paint.setTextSize(18);
 
+			// Get the size of the text
 			Rect rect = new Rect();
 			paint.getTextBounds(text, 0, text.length() , rect);
 			
-			
+			// Define the left top right and bottom of the button
 			Drawable blue_button = getResources().getDrawable(R.drawable.green_button_for_twist);
 			leftButton = c.getWidth()/2 + rect.left-paddingWidth + xText;
 			topButton = rect.top-paddingHeight + yText;
@@ -405,8 +409,7 @@ public class ConnexionTest extends ApplicationActivity {
 			blue_button.setBounds( leftButton,topButton ,rightButton , bottomButton);
 			blue_button.draw(c);
 			
-			paint.setStyle(Paint.Style.STROKE);
-			paint.setColor(Color.WHITE);
+			// Write the text
 			c.drawText(text, c.getWidth()/2 + xText, yText, paint);			
 		}
 
@@ -416,6 +419,7 @@ public class ConnexionTest extends ApplicationActivity {
 		    final float x = event.getX();
 		    final float y = event.getY();
 		 
+		    // If we touch the green button
 		    if (action == MotionEvent.ACTION_DOWN && x<rightButton && x>leftButton && y<bottomButton && y > topButton) {
 		    	opticalFlowView = !opticalFlowView;
 	        	if (D) Log.d(TAG, "event = down");
@@ -450,7 +454,7 @@ public class ConnexionTest extends ApplicationActivity {
 		
 		private boolean mRun = false;
 		private SurfaceHolder mHolder;
-		private Vue mVue;
+		//private CustomizedView mVue;
 		
 		@Override
 		public void run() {
@@ -461,7 +465,7 @@ public class ConnexionTest extends ApplicationActivity {
 					c = mHolder.lockCanvas(null);
 					synchronized (mHolder) {
 						if (D) Log.d(TAG, "Starting onDraw");
-						mVue.onDraw(c);
+						mView.onDraw(c);
 					}
 				} finally {
 					if (c!= null) mHolder.unlockCanvasAndPost(c);
@@ -473,9 +477,9 @@ public class ConnexionTest extends ApplicationActivity {
 			mRun = r;
 		}
 
-		public ConnexionTestThread (SurfaceHolder h, Vue v) {
+		public ConnexionTestThread (SurfaceHolder h) {// CustomizedView v) {
 			mHolder = h;
-			mVue = v;
+			//mView = v;
 		}
 	}
 

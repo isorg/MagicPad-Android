@@ -34,7 +34,7 @@ import com.isorg.magicpadexplorer.algorithm.RotationAlgorithm;
 
 public class TwistApplication extends ApplicationActivity {
 	
-	private Vue mVue;
+	private CustomizedView mView ;
 	private boolean opticalFlowView = false;
 	
 	//For debug
@@ -53,9 +53,9 @@ public class TwistApplication extends ApplicationActivity {
             	if (D) Log.d(TAG, "Disconnected");
     			Toast.makeText(TwistApplication.this, R.string.probleme_with_bluetooth, 80000).show();
             } else if(msg.arg1 == 3) {	
-            	mVue.setAng(rotationAlgo.getAngle());
-            	mVue.setFrame(calibration.getOutput().data);
-            	mVue.setThreshold( (int) otsu.getThreshold());
+            	mView.setAng(rotationAlgo.getAngle());
+            	mView.setFrame(calibration.getOutput().data);
+            	mView.setThreshold( (int) otsu.getThreshold());
         	}
         }
     };  
@@ -65,11 +65,11 @@ public class TwistApplication extends ApplicationActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		
-		mVue = new Vue(this);
-		setContentView(mVue);
+		mView = new CustomizedView(this);
+		setContentView(mView);
 		
 		
-		// For the title bar
+		// title bar
 	    getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar_layout);
 		tvTitleBar = (TextView) findViewById(R.tv.title_bar);
 		tvTitleBar.setText(getResources().getString(R.string.twist_name));
@@ -120,26 +120,24 @@ public class TwistApplication extends ApplicationActivity {
     	magicPadDevice.sendCommand(MagicPadDevice.COMMAND_FRAME);
     	
     	// update pipeline
-    	imageReader.update();
     	calibration.update();
     	otsu.update();
     	rotationAlgo.update();
     	
+    	// The first frames are always null
     	if (imageReader.getOutput()== null) {
     		Log.d(TAG, "imageReader.getOutPut is null (the first times)");
     		return;
     	}
     	
-    	if (calibration.getOutput() != null) {
-	    	if (D) Log.d(TAG, "rotationAlgo.getAngle() = " + rotationAlgo.getAngle());
-			Message msg = handlerStatus.obtainMessage();
-			msg.arg1 = 3;
-			handlerStatus.sendMessage(msg);	
-    	}
+    	if (D) Log.d(TAG, "rotationAlgo.getAngle() = " + rotationAlgo.getAngle());
+		Message msg = handlerStatus.obtainMessage();
+		msg.arg1 = 3;
+		handlerStatus.sendMessage(msg);	
 	}
 	
 	
-	private class Vue extends SurfaceView  implements SurfaceHolder.Callback {
+	private class CustomizedView extends SurfaceView  implements SurfaceHolder.Callback {
 
 		private PotentiometerThread mThread; 
 		private double ang = 0.0;
@@ -158,10 +156,10 @@ public class TwistApplication extends ApplicationActivity {
 			ang = a;
 		}
 		
-		public Vue (Context context) {
+		public CustomizedView (Context context) {
 			super(context);
 			getHolder().addCallback(this);
-			mThread = new PotentiometerThread (getHolder(), this);
+			mThread = new PotentiometerThread (getHolder());
 		}
 
         public void setFrame(byte[] frame)
@@ -348,7 +346,6 @@ public class TwistApplication extends ApplicationActivity {
 		
 		private boolean mRun = false;
 		private SurfaceHolder mHolder;
-		private Vue mVue;
 		
 		@Override
 		public void run() {
@@ -359,7 +356,7 @@ public class TwistApplication extends ApplicationActivity {
 					c = mHolder.lockCanvas(null);
 					synchronized (mHolder) {
 						if (D) Log.d(TAG, "Starting onDraw");
-						mVue.onDraw(c);
+						mView.onDraw(c);
 					}
 				} finally {
 					if (c!= null) mHolder.unlockCanvasAndPost(c);
@@ -371,9 +368,8 @@ public class TwistApplication extends ApplicationActivity {
 			mRun = r;
 		}
 
-		public PotentiometerThread (SurfaceHolder h, Vue v) {
+		public PotentiometerThread (SurfaceHolder h) {
 			mHolder = h;
-			mVue = v;
 		}
 	}
 	

@@ -49,6 +49,9 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 	private CoverFlow coverFlow; 
 	private Handler mHandler = new Handler();
 	
+	// For the PhotosBrowserApplication we made a special swap detection,
+	// which just detect the right to left and the left to right swap,
+	// in order to improve the robustness
 	private HorizontalSwapAlgorithm horizontalSwapAlgo = null;
 
 	
@@ -94,7 +97,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 	    setContentView(coverFlow);
 
 	    
-	    // For the title bar
+	    // title bar
 	    getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar_layout);
 		tvTitleBar = (TextView) findViewById(R.tv.title_bar);
 		tvTitleBar.setText(getResources().getString(R.string.photos_browser_name));
@@ -105,7 +108,6 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 	     
 	    mHandler.removeCallbacks(nextPictureRight);
 	    mHandler.removeCallbacks(nextPictureLeft);
-	    //mHandler.postDelayed(nextPicture, 1000);
 	    
 	    
 		// BT connexion 
@@ -127,11 +129,6 @@ public class PhotosBrowserApplication extends ApplicationActivity {
         
         horizontalSwapAlgo = new HorizontalSwapAlgorithm();
         horizontalSwapAlgo.setInput(otsu);
-        
-        /*
-        swapAlgo = new SwapAlgorithm();
-        swapAlgo.setInput(otsu);
-        */
 	}
 	
 	
@@ -139,9 +136,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	public void run() {    					
 			// Emulate a left/right swap
 			coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, null);
-						
 			mHandler.removeCallbacks(this);
-			//mHandler.postDelayed(this, 5000);
     	}
     };
     
@@ -149,27 +144,13 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	public void run() {    					
 			// Emulate a left/right swap
 			coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, null);
-						
 			mHandler.removeCallbacks(this);
-			//mHandler.postDelayed(this, 5000);
     	}
     };
     
     public class ImageAdapter extends BaseAdapter {
         int mGalleryItemBackground;
         private Context mContext;
-           
-        /*private Integer[] mImageIds = {
-          R.drawable.kasabian_kasabian,
-          R.drawable.starssailor_silence_is_easy,
-          R.drawable.killers_day_and_age,
-          R.drawable.garbage_bleed_like_me,
-          R.drawable.death_cub_for_cutie_the_photo_album,
-          R.drawable.kasabian_kasabian,
-          R.drawable.massive_attack_collected,
-          R.drawable.muse_the_resistance,
-          R.drawable.starssailor_silence_is_easy
-        }; */
 
         private ImageView[] mImages;
         
@@ -178,13 +159,14 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	File[] fName;
     	String path;
     	
+    	
         public ImageAdapter(Context c) {
        	 mContext = c;
        	 findImages();
-       	 //mImages = new ImageView[mImageIds.length];
        	 mImages = new ImageView[strFile.size()];
         }
 
+        
         public boolean createReflectedImages() {
        	 //The gap we want between the reflection and the original image
        	 final int reflectionGap = 4;
@@ -193,9 +175,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
        	 final int viewSize = 350;
     
        	 int index = 0;
-       	 //for (int imageId : mImageIds) {
        	 for( String imageId : strFile ) {    		 
-       		 //Bitmap raw = BitmapFactory.decodeResource(getResources(), imageId);    		 
        		 Bitmap raw = BitmapFactory.decodeFile( path + "/" + imageId );
        	     Log.d(TAG, "factoring: " + path + "/" + imageId);
        		 Bitmap originalImage = Bitmap.createScaledBitmap(raw, viewSize, viewSize, false);
@@ -204,7 +184,6 @@ public class PhotosBrowserApplication extends ApplicationActivity {
            
        		 //This will not scale but will flip on the Y axis
        		 Matrix matrix = new Matrix();
-       		 //matrix.preScale((int)((1.0 * viewSize)/width) , (int)((-1.0 * viewSize)/height));
        		 matrix.preScale(1, -1);
       
    			//Create a Bitmap with the flip matrix applied to it.
@@ -257,6 +236,8 @@ public class PhotosBrowserApplication extends ApplicationActivity {
        	 
    		return true;
    	}
+       
+        
         
         private void findImages()
         {
@@ -264,7 +245,6 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	    files = Environment.getExternalStorageDirectory().listFiles();
     	    
     	    if (D)Log.d(TAG, "" + getExternalFilesDir(Environment.DIRECTORY_PICTURES).getName() );
-    		//files = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getName();
     		
     	    if (D)Log.d(TAG, "files.length: " + files.length);
     		for(int i=0; i<files.length ;i++)
@@ -296,8 +276,6 @@ public class PhotosBrowserApplication extends ApplicationActivity {
         }
 
         public int getCount() {
-            //return mImageIds.length;
-       	 //return strFile.size();
        	 return mImages.length;
         }
 
@@ -310,19 +288,8 @@ public class PhotosBrowserApplication extends ApplicationActivity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-       	 //Use this code if you want to load from resources
-       	 /*ImageView i = new ImageView(mContext);
-   		i.setImageResource(mImageIds[position]);
-   		i.setLayoutParams(new CoverFlow.LayoutParams(130, 130));
-   		i.setScaleType(ImageView.ScaleType.CENTER_INSIDE); 
-   	 
-   		//Make sure we set anti-aliasing otherwise we get jaggies
-   		BitmapDrawable drawable = (BitmapDrawable) i.getDrawable();
-   		drawable.setAntiAlias(true);
-   		return i;*/         
-   	  
-       	 // Use this code to use reflected images
-       	 return mImages[position];
+	       	 // Use this code to use reflected images
+	       	 return mImages[position];
         }
         
       /** Returns the size (0.0f to 1.0f) of the views 
@@ -358,8 +325,8 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	calibration.update();
     	otsu.update();
     	horizontalSwapAlgo.update();
-    	//swapAlgo.update();
-    	
+
+    	// The first frames are always null
     	if (imageReader.getOutput()== null) {
     		Log.d(TAG, "imageReader.getOutPut is null (the first times)");
     		return;

@@ -39,48 +39,52 @@ public abstract class ApplicationActivity extends Activity {
 	protected SwapAlgorithm swapAlgo = null;
 	protected RotationAlgorithm rotationAlgo = null;
 	
-	// For the title bar
+	// title bar
 	protected TextView tvTitleBar, tvConnexionState = null;
 	protected ImageView ivConnexionState = null;
 	
-	// For the BT
+	// bluetooth
 	protected MagicPadDevice magicPadDevice;
 	protected String address;
 	
-	// For change orientation;
+	// orientation
 	private int mOrientation;
 	
-	//For keep the screen bright
+	// To keep the screen bright
     WakeLock mWakeLock;
     
     
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
+		// Know the initial orientation
 		mOrientation = getResources().getConfiguration().orientation;
 
+		// To get the wake lock
         try
-		{
-			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		{	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, this.getLocalClassName());
 		}
-		catch (Exception e){
-		}
-			}
+		catch (Exception e){}
+	}
 	
 	
 	   @Override
 		protected void onResume() {
+		    // To start the timer and read the frames
 			mTimer = new Timer();
-	    	mWakeLock.acquire();
 			readFrames();
-			Toast.makeText(this, R.string.wait_for_bluetooth, Toast.LENGTH_LONG).show();
+			// Start the wake lock
+	    	mWakeLock.acquire();
+	    	// Ask to wait for the bluetooth connexion
+			Toast.makeText(this, R.string.wait_for_bluetooth, Toast.LENGTH_SHORT).show();
 			super.onResume();
 		}
 	    
 	   
 		@Override
 		protected void onPause() {
+			// Stop the wake lock
 			mWakeLock.release();
 			mTimer.cancel();
 			super.onPause();
@@ -101,6 +105,8 @@ public abstract class ApplicationActivity extends Activity {
 
 		@Override
 		protected void onStop() {
+			// if the activity is restarting because orientation has change, nothing to do
+			// else, finish the activity in order to avoid some issues with threads
 			if (mOrientation != getResources().getConfiguration().orientation) {
 				mOrientation = getResources().getConfiguration().orientation;
 			} else {
