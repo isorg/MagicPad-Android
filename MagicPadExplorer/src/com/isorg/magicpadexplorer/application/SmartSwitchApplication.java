@@ -124,9 +124,16 @@ public class SmartSwitchApplication extends ApplicationActivity {
     	calibration.update();
     	otsu.update();
     	
+    	// Avoid bluetooth issue
+    	if (nullFrameCounter >90) {
+    		Toast.makeText(this, getResources().getString(R.string.probleme_with_bluetooth), Toast.LENGTH_SHORT).show();
+    		finish();
+    	}
+    	
     	// The first frames are always null
     	if( imageReader.getOutput() == null )
     	{	Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
+    		nullFrameCounter++;
     		return;
     	}
     	

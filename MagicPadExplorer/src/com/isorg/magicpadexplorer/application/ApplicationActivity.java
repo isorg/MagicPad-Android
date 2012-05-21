@@ -46,6 +46,7 @@ public abstract class ApplicationActivity extends Activity {
 	// bluetooth
 	protected MagicPadDevice magicPadDevice;
 	protected String address;
+    protected int nullFrameCounter = 0;
 	
 	// orientation
 	private int mOrientation;

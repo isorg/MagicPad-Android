@@ -30,7 +30,7 @@
     <!-- Bluetooth State -->
 	<string name="no_bluetooth">No Bluetooth on this device</string>
 	<string name="wait_for_bluetooth">Please, wait for the Bluetooth connexion</string>
-	<string name="probleme_with_bluetooth">Problem with Bluetooth connexion</string>
+	<string name="probleme_with_bluetooth">Problem with Bluetooth connexion, please try again.</string>
 	
 	<!-- Green Button Text -->
 	<string name="switch_to_flow">Switch to the optical flow view</string>

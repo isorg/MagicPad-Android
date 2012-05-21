@@ -88,9 +88,7 @@ public class LemonViewerActivity extends ApplicationActivity
     	
     	// Register first scene
     	addModels(mScene1);
-    	
-    	//mScene2.add( new MorphPlaneModel(this, "Lemon/lemonplane.obj"));
-    	//addModels(mScene2);
+
     	
     	// Hide all models
     	mRenderer.showAllModels( false );
@@ -140,76 +138,41 @@ public class LemonViewerActivity extends ApplicationActivity
     	imageReader.update();
     	calibration.update();
     	
-    	if( imageReader.getOutput() == null )
-    		{
-	    		if (D) Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
-	    		return;
-    		}
+    	// Avoid bluetooth issue
+    	if (nullFrameCounter >100) {
+    		Toast.makeText(this, getResources().getString(R.string.probleme_with_bluetooth), Toast.LENGTH_SHORT).show();
+    		finish();
+    	}
+    	
+    	// The first frames are always null
+    	if( imageReader.getOutput() == null ) {
+    		if (D) Log.d(TAG, "imageReader.getOutPut is null (the first times)" );
+    		nullFrameCounter++;
+    		return;
+		}
     	
     	// Send message back
 		Message msg = handlerStatus.obtainMessage();
 		msg.arg1 = 3;
-		
-		/*Bundle b = new Bundle();
-		b.putByteArray("frame", imageReader.getOutput().data);
-		
-		msg.setData(b);*/
 		handlerStatus.sendMessage(msg);
     }
-    
-    // Register a model to the renderer
-	// Never used
-	/*
-    private void addModel(BasicModel model) {
-    	mRenderer.AddModel(model);
-    }*/
+   
     
  // Register a list of models to the renderer
     private void addModels(ArrayList<BasicModel> scene) {
    		mRenderer.AddModels(scene);
     }
     
-    /* 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    //inflater.inflate(R.menu.menu, menu);
-	    
-	    menu.add(0, Menu.FIRST, 0, "<Scene1>");
-	    //menu.add(0, Menu.FIRST + 1, 0, "<Scene2>");
-	    
-	    return true;
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) 
-	    { 
-	    case Menu.FIRST: 
-	    	mRenderer.showAllModels( false );
-	    	mRenderer.showModels(mScene1, true);
-	    	return true;
-	   /* case Menu.FIRST + 1: 
-	    	mRenderer.showAllModels( false );
-	    	mRenderer.showModels(mScene2, true);
-	    	return true;*/
-		//}
-		//return false;
-	//}
-	
+
 
 	@Override
     protected void onPause() {
-        // Ideally a game should implement onResume() and onPause()
-        // to take appropriate action when the activity looses focus
 		magicPadDevice.close();
         super.onPause();
         mGLSurfaceView.onPause();
     }
 	@Override
     protected void onResume() {
-        // Ideally a game should implement onResume() and onPause()
-        // to take appropriate action when the activity looses focus
 		magicPadDevice.connect(address);
         super.onResume();
         mGLSurfaceView.onResume();
