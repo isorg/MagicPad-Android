@@ -74,7 +74,10 @@ public class PhotosBrowserApplication extends ApplicationActivity {
             	} else if (swap == SwapAlgorithm.SWAP_RIGHT_TO_LEFT) {
             		mHandler.postDelayed(nextPictureRight, 0);
             	}
-        	}
+        	} else if (msg.arg1 == 4) {
+            	Toast.makeText(PhotosBrowserApplication.this, getResources().getString(R.string.probleme_with_bluetooth),Toast.LENGTH_LONG).show();
+            	finish();
+            }
         }
     };  
     
@@ -328,8 +331,9 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	
     	// Avoid bluetooth issue
     	if (nullFrameCounter >90) {
-    		Toast.makeText(this, getResources().getString(R.string.probleme_with_bluetooth), Toast.LENGTH_SHORT).show();
-    		finish();
+    		Message msgToLeave = handlerStatus.obtainMessage();
+    		msgToLeave.arg1 = 4;
+    		handlerStatus.sendMessage(msgToLeave);
     	}
 
     	// The first frames are always null

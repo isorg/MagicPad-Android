@@ -52,7 +52,10 @@ public class SmartSwitchApplication extends ApplicationActivity {
             		MediaPlayer mediaPlayer = MediaPlayer.create(SmartSwitchApplication.this, R.raw.offbutton);
             		mediaPlayer.start();
             	}
-        	}
+        	} else if (msg.arg1 == 4) {
+            	Toast.makeText(SmartSwitchApplication.this, getResources().getString(R.string.probleme_with_bluetooth),Toast.LENGTH_LONG).show();
+            	finish();
+            }
         }
     };    
 	
@@ -126,8 +129,9 @@ public class SmartSwitchApplication extends ApplicationActivity {
     	
     	// Avoid bluetooth issue
     	if (nullFrameCounter >90) {
-    		Toast.makeText(this, getResources().getString(R.string.probleme_with_bluetooth), Toast.LENGTH_SHORT).show();
-    		finish();
+    		Message msgToLeave = handlerStatus.obtainMessage();
+    		msgToLeave.arg1 = 4;
+    		handlerStatus.sendMessage(msgToLeave);
     	}
     	
     	// The first frames are always null

@@ -56,7 +56,10 @@ public class TwistApplication extends ApplicationActivity {
             	mView.setAng(rotationAlgo.getAngle());
             	mView.setFrame(calibration.getOutput().data);
             	mView.setThreshold( (int) otsu.getThreshold());
-        	}
+        	} else if (msg.arg1 == 4) {
+            	Toast.makeText(TwistApplication.this, getResources().getString(R.string.probleme_with_bluetooth),Toast.LENGTH_LONG).show();
+            	finish();
+            }
         }
     };  
 
@@ -126,8 +129,9 @@ public class TwistApplication extends ApplicationActivity {
     	
     	// Avoid bluetooth issue
     	if (nullFrameCounter >90) {
-    		Toast.makeText(this, getResources().getString(R.string.probleme_with_bluetooth), Toast.LENGTH_SHORT).show();
-    		finish();
+    		Message msgToLeave = handlerStatus.obtainMessage();
+    		msgToLeave.arg1 = 4;
+    		handlerStatus.sendMessage(msgToLeave);
     	}
     	
     	// The first frames are always null

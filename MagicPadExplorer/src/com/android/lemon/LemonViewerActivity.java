@@ -13,6 +13,7 @@ import com.android.lemon.model.WaterModel;
 import com.isorg.magicpadexplorer.MagicPadDevice;
 import com.isorg.magicpadexplorer.R;
 import com.isorg.magicpadexplorer.application.ApplicationActivity;
+import com.isorg.magicpadexplorer.application.ConnexionTest;
 
 
 import android.graphics.Bitmap;
@@ -57,6 +58,9 @@ public class LemonViewerActivity extends ApplicationActivity
             } else if(msg.arg1 == 3) {     
             	LemonModel.setPressureMap( calibration.getOutput().data, 10, 10 );
             	if (D) Log.d(TAG, "imageReader = " + imageReader.getOutput().data[0]);
+            } else if (msg.arg1 == 4) {
+            	Toast.makeText(LemonViewerActivity.this, getResources().getString(R.string.probleme_with_bluetooth),Toast.LENGTH_LONG).show();
+            	finish();
             }
         }
     };
@@ -140,8 +144,9 @@ public class LemonViewerActivity extends ApplicationActivity
     	
     	// Avoid bluetooth issue
     	if (nullFrameCounter >100) {
-    		Toast.makeText(this, getResources().getString(R.string.probleme_with_bluetooth), Toast.LENGTH_SHORT).show();
-    		finish();
+    		Message msgToLeave = handlerStatus.obtainMessage();
+    		msgToLeave.arg1 = 4;
+    		handlerStatus.sendMessage(msgToLeave);
     	}
     	
     	// The first frames are always null

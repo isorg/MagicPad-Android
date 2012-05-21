@@ -61,7 +61,10 @@ public class VumeterApplication extends ApplicationActivity {
             	else if ( (average >= (255-42*5)) &&  (average < (255-42*4))) mView.setState(5);
             	else if ( (average >= (255-42*6)) &&  (average < (255-42*5))) mView.setState(6);
 
-        	}
+        	} else if (msg.arg1 == 4) {
+            	Toast.makeText(VumeterApplication.this, getResources().getString(R.string.probleme_with_bluetooth),Toast.LENGTH_LONG).show();
+            	finish();
+            }
         }
     };  
 	
@@ -125,8 +128,9 @@ public class VumeterApplication extends ApplicationActivity {
     	
     	// Avoid bluetooth issue
     	if (nullFrameCounter >90) {
-    		Toast.makeText(this, getResources().getString(R.string.probleme_with_bluetooth), Toast.LENGTH_SHORT).show();
-    		finish();
+    		Message msgToLeave = handlerStatus.obtainMessage();
+    		msgToLeave.arg1 = 4;
+    		handlerStatus.sendMessage(msgToLeave);
     	}
     	
     	// The first frames are always null

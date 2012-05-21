@@ -85,6 +85,9 @@ public class ConnexionTest extends ApplicationActivity {
         		if (quartAlgo.getQuart() != QuartAlgorithm.QUART_NONE)
         			mView.setQuart(quartAlgo.getQuart());
         		else mView.setQuart(QuartAlgorithm.QUART_NONE);
+            } else if (msg.arg1 == 4) {
+            	Toast.makeText(ConnexionTest.this, getResources().getString(R.string.probleme_with_bluetooth),Toast.LENGTH_LONG).show();
+            	finish();
             }
         }
     };    
@@ -169,9 +172,10 @@ public class ConnexionTest extends ApplicationActivity {
     	rotationAlgo.update();
     	
     	// Avoid bluetooth issue
-    	if (nullFrameCounter >90) {
-    		Toast.makeText(this, getResources().getString(R.string.probleme_with_bluetooth), Toast.LENGTH_SHORT).show();
-    		finish();
+    	if (nullFrameCounter == 90) {
+    		Message msgToLeave = handlerStatus.obtainMessage();
+    		msgToLeave.arg1 = 4;
+    		handlerStatus.sendMessage(msgToLeave);
     	}
     	
     	// The first frames are always null
