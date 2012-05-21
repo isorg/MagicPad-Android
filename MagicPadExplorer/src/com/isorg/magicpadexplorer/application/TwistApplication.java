@@ -146,8 +146,7 @@ public class TwistApplication extends ApplicationActivity {
         private int PSZ = 35; // pixel size
         private int paddingHeight = 20;
 		private int paddingWidth = 15;
-		private int xText = 50;
-		private int yText = 70;
+		private int paddingDrawButton = 100;
 		
 		private int leftButton, topButton, rightButton, bottomButton;
 
@@ -249,13 +248,6 @@ public class TwistApplication extends ApplicationActivity {
 		        			paint.setColor(Color.BLACK);
 		        			c.drawRect(ro*PSZ, co*PSZ, (ro+1)*PSZ, (co+1)*PSZ, paint);
 		        			
-		        			/*
-		        			// draw pixel value
-		        			paint.setColor(Color.BLUE);
-		        			paint.setAntiAlias(false);
-		        			paint.setTextSize(10);
-		        			c.drawText(String.valueOf(value), (ro*PSZ + PSZ/2), (int)((co+PSZ/2)*PSZ), paint);
-		        			*/
 		        			
 		        			// draw the flow
 			                paint.setAntiAlias(true);
@@ -293,16 +285,16 @@ public class TwistApplication extends ApplicationActivity {
 			
 			
 			Drawable blue_button = getResources().getDrawable(R.drawable.green_button_for_twist);
-			leftButton = rect.left-paddingWidth + xText;
-			topButton = rect.top-paddingHeight + yText;
-			rightButton = rect.right + paddingWidth + xText;
-			bottomButton = rect.bottom + paddingHeight + yText;
+			leftButton = rect.left-paddingWidth + c.getWidth()/2 - rect.right/2;
+			topButton = rect.top-paddingHeight + c.getHeight()/2 - PSZ*5 -paddingDrawButton;
+			rightButton = rect.right + paddingWidth + c.getWidth()/2 - rect.right/2;
+			bottomButton = rect.bottom + paddingHeight + c.getHeight()/2 - PSZ*5 - paddingDrawButton;
 			blue_button.setBounds( leftButton,topButton ,rightButton , bottomButton);
 			blue_button.draw(c);
 			
 			paint.setStyle(Paint.Style.STROKE);
 			paint.setColor(Color.WHITE);
-			c.drawText(text, xText, yText, paint);			
+			c.drawText(text, c.getWidth()/2 - rect.right/2 , c.getHeight()/2 - rect.bottom/2 - PSZ*5 -paddingDrawButton, paint);			
 		}
 
 		@Override
