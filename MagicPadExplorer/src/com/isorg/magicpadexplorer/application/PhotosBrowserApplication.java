@@ -134,7 +134,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 	
     private Runnable nextPictureRight = new Runnable() {	
     	public void run() {    					
-			// Emulate a left/right swap
+			// Emulate a right/left swap
 			coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, null);
 			mHandler.removeCallbacks(this);
     	}
