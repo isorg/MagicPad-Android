@@ -245,10 +245,10 @@ public class TwistApplication extends ApplicationActivity {
 		        			// draw pixel
 		        			value = (mFrame[co*10 + ro] & 0xff);
 		        			
-		        			if(value >= mThreshold) 
-		        				value = 255;
-		        			else 
-		        				value = ( int ) (value * 255.0 / mThreshold) ;
+//		        			if(value >= mThreshold) 
+//		        				value = 255;
+//		        			else 
+//		        				value = ( int ) (value * 255.0 / mThreshold) ;
 		        		
 		        			paint.setStyle(Style.FILL);
 		        			paint.setARGB(255, value, value, value);

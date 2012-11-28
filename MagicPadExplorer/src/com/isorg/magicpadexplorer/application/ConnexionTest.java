@@ -281,10 +281,10 @@ public class ConnexionTest extends ApplicationActivity {
 		        		for(int ro=0; ro<flow.rows(); ro++) {
 		        			// draw pixel
 		        			value = (mFrame[co*10 + ro] & 0xff);
-		        			if(value >= mThreshold) 
-		        				value = 255;
-		        			else 
-		        				value = ( int ) (value * 255.0 / mThreshold) ;
+//		        			if(value >= mThreshold) 
+//		        				value = 255;
+//		        			else 
+//		        				value = ( int ) (value * 255.0 / mThreshold) ;
 		        		
 		        			// Draw the gray rectangle
 		        			paint.setStyle(Style.FILL);
