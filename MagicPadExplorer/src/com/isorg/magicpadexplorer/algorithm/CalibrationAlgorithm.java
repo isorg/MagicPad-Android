@@ -54,6 +54,13 @@ public class CalibrationAlgorithm extends ImageAlgorithm {
 	private float decay;
 	private int periodicity;
     private int periodCounter;
+    
+    public float getDecay()  {return decay;}
+    public void setDecay(float d) {decay = d;}
+    
+    public int getPeriodicity() {return periodicity;}
+    public void setPeriodicity(int p) {periodicity = p;}
+    
 	
 	// working pixel mask: true=working, false=dead
     // Others algo of pipeline need this array.
@@ -129,7 +136,7 @@ public class CalibrationAlgorithm extends ImageAlgorithm {
 		
 		
 	    // build frame in 32F if needed
-	    if(( frame32F.empty() ) || frame32F.cols() != frame.cols() || frame32F.rows() != frame.rows() )  //|| ( frame32F.size() != frame.size() ) )
+	    if( (frame32F.empty()) || (frame32F.cols() != frame.cols()) || (frame32F.rows() != frame.rows()) )  //|| ( frame32F.size() != frame.size() ) )
 	    {
 	        frame32FBig = new Mat( frame.rows()+2, frame.cols()+2, CvType.CV_32F, Scalar.all(0) );
 	        frame32F = frame32FBig.submat(1, frame.rows()+1, 1, frame.cols()+1);
@@ -138,7 +145,7 @@ public class CalibrationAlgorithm extends ImageAlgorithm {
 		frame.convertTo(frame32F, CvType.CV_32F);
 		
 		// build reference frame if needed
-	    if(( referenceFrame.empty() ) || referenceFrame.cols() != frame.cols() || referenceFrame.rows() != frame.rows() )  //( referenceFrame.size() != frame.size() ) ) 
+	    if(( referenceFrame.empty() ) || (referenceFrame.cols() != frame.cols()) || (referenceFrame.rows() != frame.rows()) )  //( referenceFrame.size() != frame.size() ) ) 
 	    {
 	        referenceFrame =  new Mat( frame.rows(), frame.cols(), CvType.CV_32F );
 
