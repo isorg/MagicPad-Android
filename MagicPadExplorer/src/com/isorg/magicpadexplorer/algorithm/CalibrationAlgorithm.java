@@ -55,11 +55,22 @@ public class CalibrationAlgorithm extends ImageAlgorithm {
 	private int periodicity;
     private int periodCounter;
     
+    // decay is a percentage
+    // By default, decay = 0.95
+    // If you want to change it, we advise you to stay between 0.90 and 0.99
     public float getDecay()  {return decay;}
-    public void setDecay(float d) {decay = d;}
+    public void setDecay(float d) {
+    	if ( (d>0.0) && (d<1.0) )
+    		decay = d;	
+    }
     
+    // By default, periodicity = 15
+    // More periodicity is low, more the reference frame will be updated often
     public int getPeriodicity() {return periodicity;}
-    public void setPeriodicity(int p) {periodicity = p;}
+    public void setPeriodicity(int p) {
+    	if ( (p>0) && (p<100) )
+    		periodicity = p;	
+    }
     
 	
 	// working pixel mask: true=working, false=dead
