@@ -2,9 +2,11 @@ package com.isorg.magicpadexplorer.application;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.isorg.magicpadexplorer.R;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -15,10 +17,12 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Bitmap.Config;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Shader.TileMode;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -44,7 +48,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 
 	//For debug
 	String TAG = "PhotosBrowserApplication";
-	boolean D = false;
+	boolean D = true;
 	
 	private CoverFlow coverFlow; 
 	private Handler mHandler = new Handler();
@@ -89,8 +93,7 @@ public class PhotosBrowserApplication extends ApplicationActivity {
 		
 		
 		// Setup the coverflow
-	    ImageAdapter coverImageAdapter = new ImageAdapter(this);     
-	    coverImageAdapter.createReflectedImages();
+	    ImageAdapter coverImageAdapter = new ImageAdapter(this);
 	     
 	    coverFlow = new CoverFlow(this);
 	    coverFlow.setSpacing(-25);
@@ -151,132 +154,116 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	}
     };
     
+    
+    
+    
+    /*
+     *  ImageAdapter class
+     */
     public class ImageAdapter extends BaseAdapter {
         int mGalleryItemBackground;
         private Context mContext;
 
         private ImageView[] mImages;
+        public final int MAX_PICTURE = 20;
         
-    	ArrayList<String> strFile = new ArrayList<String>();
-    	File[] files;
-    	File[] fName;
-    	String path;
-    	
     	
         public ImageAdapter(Context c) {
-       	 mContext = c;
-       	 findImages();
-       	 mImages = new ImageView[strFile.size()];
+        	mContext = c;
+        	findAndProcessImages();
         }
 
         
-        public boolean createReflectedImages() {
-       	 //The gap we want between the reflection and the original image
-       	 final int reflectionGap = 4;
-       	 
-       	 //
-       	 final int viewSize = 350;
-    
-       	 int index = 0;
-       	 for( String imageId : strFile ) {    		 
-       		 Bitmap raw = BitmapFactory.decodeFile( path + "/" + imageId );
-       	     Log.d(TAG, "factoring: " + path + "/" + imageId);
-       		 Bitmap originalImage = Bitmap.createScaledBitmap(raw, viewSize, viewSize, false);
-       		 int width = originalImage.getWidth();
-       		 int height = originalImage.getHeight();
-           
-       		 //This will not scale but will flip on the Y axis
-       		 Matrix matrix = new Matrix();
-       		 matrix.preScale(1, -1);
-      
-   			//Create a Bitmap with the flip matrix applied to it.
-   			//We only want the bottom half of the image
-   			Bitmap reflectionImage = Bitmap.createBitmap(originalImage, 0, height/2, width, height/2, matrix, false);
-   			   			       
-   			//Create a new bitmap with same width but taller to fit reflection
-   			Bitmap bitmapWithReflection = Bitmap.createBitmap(width , (height + height/2), Config.ARGB_8888);
-   			 
-   			//Create a new Canvas with the bitmap that's big enough for
-   			//the image plus gap plus reflection
-   			Canvas canvas = new Canvas(bitmapWithReflection);
-   			
-   			//Draw in the original image
-   			canvas.drawBitmap(originalImage, 0, 0, null);
-   			
-   			//Draw in the gap
-   			Paint deafaultPaint = new Paint();
-   			canvas.drawRect(0, height, width, height + reflectionGap, deafaultPaint);
-   			
-   			//Draw in the reflection
-   			canvas.drawBitmap(reflectionImage, 0, height + reflectionGap, null);
-   			
-   			//Create a shader that is a linear gradient that covers the reflection
-   			Paint paint = new Paint(); 
-   			LinearGradient shader = new LinearGradient(
-   					0, 
-   					originalImage.getHeight(), 
-   					0, 
-   					bitmapWithReflection.getHeight() + reflectionGap, 
-   					0x90ffffff, 
-   					0x00ffffff, 
-   					TileMode.CLAMP); 
-   			
-   			//Set the paint to use this shader (linear gradient)
-   			paint.setShader(shader); 
-   			
-   			//Set the Transfer mode to be porter duff and destination in
-   			paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN)); 
-   			
-   			//Draw a rectangle using the paint with our linear gradient
-   			canvas.drawRect(0, height, width, bitmapWithReflection.getHeight() + reflectionGap, paint); 
-   			      
-   			ImageView imageView = new ImageView(mContext);
-   			imageView.setImageBitmap(bitmapWithReflection);
-   			imageView.setLayoutParams(new CoverFlow.LayoutParams(viewSize, viewSize+viewSize/2));
-   			imageView.setScaleType(ScaleType.MATRIX);
-   			mImages[index++] = imageView;
-   		}
-       	 
-   		return true;
-   	}
-       
-        
-        
-        private void findImages()
+        private void findAndProcessImages()
         {
-        	String pictureFolder = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getName();
-    	    files = Environment.getExternalStorageDirectory().listFiles();
-    	    
-    	    if (D)Log.d(TAG, "" + getExternalFilesDir(Environment.DIRECTORY_PICTURES).getName() );
-    		
-    	    if (D)Log.d(TAG, "files.length: " + files.length);
-    		for(int i=0; i<files.length ;i++)
-    		{
-    			if(files[i].isDirectory())// If file is Directory
-    			{
-    				//Add files in DCIM to fName Array
-    				if(files[i].getName().equals( pictureFolder )) {
-    					fName = files[i].listFiles();//Add Array
-    					path = files[i].getPath().toString();//Get PATH
-    					if (D) Log.d(TAG, "" + path);
-    				}	
-    			}	
-    		}
-        	    			
-    		Log.d(TAG, "fName.length: " + fName.length);
-    		for(int j=0; j<fName.length; j++)
-    		{
-    			Log.d(TAG, "fName.getName: " + fName[j].getName());
-    			if( fName[j].getName().toString().indexOf(".jpg") >= 0 
-    					|| fName[j].getName().toString().indexOf(".png") >= 0
-    					|| fName[j].getName().toString().indexOf(".gif") >= 0 )
-    			{
-    				strFile.add(fName[j].getName().toString());
-    				Log.d("CoverFlowExample", "Adding: " + fName[j].getName().toString());
-    			}
-    			
-    		}
-        }
+        	Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI; 	// The URI to images stored on SD card
+     	    String[] proj = { MediaStore.Images.Media.DATA };
+            Cursor cursor = managedQuery(contentUri, proj, null, null, null);	// cursor contains all pictures
+            cursor.moveToFirst();
+            
+            if (D) Log.d (TAG, "cursor.getCount : " +  cursor.getCount() );
+            if (cursor.getCount() > MAX_PICTURE)		// to avoid to have to much pictures
+ 	    		mImages = new ImageView[ MAX_PICTURE ];
+ 	    	else
+ 	    		mImages = new ImageView[ cursor.getCount() ];
+            
+            int i=0;
+            while ( (i<MAX_PICTURE)  &&  (i<cursor.getCount()) )
+            {
+         	   if (D) Log.d (TAG, "adding : " + cursor.getString(0));
+         	   mImages[i] = reflectedImage( cursor.getString(0));
+         	   i++;
+         	   cursor.moveToNext();
+            }
+     		
+         }
+        
+        private ImageView reflectedImage(String path)
+        {
+        	//The gap we want between the reflection and the original image
+          	final int reflectionGap = 4;
+          	 
+          	final int viewSize = 350;
+          	
+          	Bitmap raw = BitmapFactory.decodeFile( path );
+          	Log.d(TAG, "factoring: " + path );
+          	
+      		Bitmap originalImage = Bitmap.createScaledBitmap(raw, viewSize, viewSize, false);
+      		int width = originalImage.getWidth();
+      		int height = originalImage.getHeight();
+          
+      		//This will not scale but will flip on the Y axis
+      		Matrix matrix = new Matrix();
+      		matrix.preScale(1, -1);
+     
+  			//Create a Bitmap with the flip matrix applied to it.
+  			//We only want the bottom half of the image
+  			Bitmap reflectionImage = Bitmap.createBitmap(originalImage, 0, height/2, width, height/2, matrix, false);
+  			   			       
+  			//Create a new bitmap with same width but taller to fit reflection
+  			Bitmap bitmapWithReflection = Bitmap.createBitmap(width , (height + height/2), Config.ARGB_8888);
+  			 
+  			//Create a new Canvas with the bitmap that's big enough for
+  			//the image plus gap plus reflection
+  			Canvas canvas = new Canvas(bitmapWithReflection);
+  			
+  			//Draw in the original image
+  			canvas.drawBitmap(originalImage, 0, 0, null);
+  			
+  			//Draw in the gap
+  			Paint deafaultPaint = new Paint();
+  			canvas.drawRect(0, height, width, height + reflectionGap, deafaultPaint);
+  			
+  			//Draw in the reflection
+  			canvas.drawBitmap(reflectionImage, 0, height + reflectionGap, null);
+  			
+  			//Create a shader that is a linear gradient that covers the reflection
+  			Paint paint = new Paint(); 
+  			LinearGradient shader = new LinearGradient(
+  					0, 
+  					originalImage.getHeight(), 
+  					0, 
+  					bitmapWithReflection.getHeight() + reflectionGap, 
+  					0x90ffffff, 
+  					0x00ffffff, 
+  					TileMode.CLAMP); 
+  			
+  			//Set the paint to use this shader (linear gradient)
+  			paint.setShader(shader); 
+  			
+  			//Set the Transfer mode to be porter duff and destination in
+  			paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN)); 
+  			
+  			//Draw a rectangle using the paint with our linear gradient
+  			canvas.drawRect(0, height, width, bitmapWithReflection.getHeight() + reflectionGap, paint); 
+  			      
+  			ImageView imageView = new ImageView(mContext);
+  			imageView.setImageBitmap(bitmapWithReflection);
+  			imageView.setLayoutParams(new CoverFlow.LayoutParams(viewSize, viewSize+viewSize/2));
+  			imageView.setScaleType(ScaleType.MATRIX);
+  			return imageView;
+       }
+       
 
         public int getCount() {
        	 return mImages.length;
