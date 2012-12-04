@@ -1,9 +1,5 @@
 package com.isorg.magicpadexplorer.application;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.isorg.magicpadexplorer.R;
 import android.content.Context;
 import android.database.Cursor;
@@ -19,7 +15,6 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.Shader.TileMode;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -154,6 +149,58 @@ public class PhotosBrowserApplication extends ApplicationActivity {
     	}
     };
     
+
+	@Override
+	protected void onResume() {
+		magicPadDevice.connect(address);
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		magicPadDevice.close();
+		super.onPause();
+	}
+
+
+	@Override
+	protected void TimerMethod() {
+		// send read frame command
+    	magicPadDevice.sendCommand(MagicPadDevice.COMMAND_FRAME);
+    	
+    	// update pipeline
+    	imageReader.update();
+    	calibration.update();
+    	otsu.update();
+    	horizontalSwapAlgo.update();
+    	
+    	// Avoid bluetooth issue
+    	if (nullFrameCounter >90) {
+    		Message msgToLeave = handlerStatus.obtainMessage();
+    		msgToLeave.arg1 = 4;
+    		handlerStatus.sendMessage(msgToLeave);
+    	}
+
+    	// The first frames are always null
+    	if (imageReader.getOutput()== null) {
+    		Log.d(TAG, "imageReader.getOutPut is null (the first times)");
+    		nullFrameCounter++;
+    		return;
+    	}
+    	
+    	// Send message back
+    	int swap = horizontalSwapAlgo.getLastSwapMotion();
+    	if (swap != SwapAlgorithm.SWAP_NONE) {
+    		if (D) Log.d(TAG, "swap detected = " + swap);
+			Message msg = handlerStatus.obtainMessage();
+			msg.arg1 = 3;
+			Bundle b = new Bundle();
+			b.putInt("swap", swap);
+			msg.setData(b);
+			handlerStatus.sendMessage(msg);
+    	}
+    	
+	}
     
     
     
@@ -176,12 +223,20 @@ public class PhotosBrowserApplication extends ApplicationActivity {
         
         private void findAndProcessImages()
         {
-        	Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI; 	// The URI to images stored on SD card
+        	Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI; 	// The URI to images stored on SD card (photos, pictures, screenCaptures...)
      	    String[] proj = { MediaStore.Images.Media.DATA };
             Cursor cursor = managedQuery(contentUri, proj, null, null, null);	// cursor contains all pictures
             cursor.moveToFirst();
             
             if (D) Log.d (TAG, "cursor.getCount : " +  cursor.getCount() );
+            
+            // If there is no pictures, stop application and return an error message
+            if (cursor.getCount() <= 1)
+            {
+            	Toast.makeText(PhotosBrowserApplication.this, getResources().getString(R.string.no_picture),Toast.LENGTH_LONG).show();
+            	finish();
+            }
+            
             if (cursor.getCount() > MAX_PICTURE)		// to avoid to have to much pictures
  	    		mImages = new ImageView[ MAX_PICTURE ];
  	    	else
@@ -290,58 +345,4 @@ public class PhotosBrowserApplication extends ApplicationActivity {
          } 
 
     }
-    
-
-	@Override
-	protected void onResume() {
-		magicPadDevice.connect(address);
-		super.onResume();
-	}
-
-	@Override
-	protected void onPause() {
-		magicPadDevice.close();
-		super.onPause();
-	}
-
-
-	@Override
-	protected void TimerMethod() {
-		// send read frame command
-    	magicPadDevice.sendCommand(MagicPadDevice.COMMAND_FRAME);
-    	
-    	// update pipeline
-    	imageReader.update();
-    	calibration.update();
-    	otsu.update();
-    	horizontalSwapAlgo.update();
-    	
-    	// Avoid bluetooth issue
-    	if (nullFrameCounter >90) {
-    		Message msgToLeave = handlerStatus.obtainMessage();
-    		msgToLeave.arg1 = 4;
-    		handlerStatus.sendMessage(msgToLeave);
-    	}
-
-    	// The first frames are always null
-    	if (imageReader.getOutput()== null) {
-    		Log.d(TAG, "imageReader.getOutPut is null (the first times)");
-    		nullFrameCounter++;
-    		return;
-    	}
-    	
-    	// Send message back
-    	int swap = horizontalSwapAlgo.getLastSwapMotion();
-    	if (swap != SwapAlgorithm.SWAP_NONE) {
-    		if (D) Log.d(TAG, "swap detected = " + swap);
-			Message msg = handlerStatus.obtainMessage();
-			msg.arg1 = 3;
-			Bundle b = new Bundle();
-			b.putInt("swap", swap);
-			msg.setData(b);
-			handlerStatus.sendMessage(msg);
-    	}
-    	
-	}
-
 }

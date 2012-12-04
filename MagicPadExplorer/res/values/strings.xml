@@ -44,5 +44,8 @@
 	<string name="average">Average = </string>
 	<string name="object">Object detected = </string>
 	<string name="angle">Angle = </string>
+	
+	<!-- No picture for Photos Browser Application -->
+	<string name="no_picture">No picture or not enough found on the external storage.</string>
     
 </resources>
